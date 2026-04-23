@@ -2,9 +2,11 @@
 
 **Deploy root:** the `public/` folder (HTML, CSS, assets). Configure Cloudflare **Pages** with build output directory **`public`**.
 
-| Doc                    | What                                                |
-| ---------------------- | --------------------------------------------------- |
-| [DEPLOY.md](DEPLOY.md) | Cloudflare setup, custom domain, Git, CI, analytics |
+| Doc                                          | What                                                |
+| -------------------------------------------- | --------------------------------------------------- |
+| [DEPLOY.md](DEPLOY.md)                       | Cloudflare setup, custom domain, Git, CI, analytics |
+| [CONTRIBUTING.md](CONTRIBUTING.md)           | Branching, commit, and PR workflow                  |
+| [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) | Safe merge/deploy checklist                         |
 
 **Local preview:** from `public/`, run `npx -y serve` or `python -m http.server` and open `/index.html`.
 
