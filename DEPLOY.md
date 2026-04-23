@@ -2,10 +2,10 @@
 
 ## Workers vs Pages (important)
 
-| Product | Use for | Typical URL |
-|--------|---------|-------------|
-| **Cloudflare Workers** | Serverless **code** (JavaScript) | `*.workers.dev` |
-| **Cloudflare Pages** | **Static sites** (HTML, CSS, assets) | `*.pages.dev` |
+| Product                | Use for                              | Typical URL     |
+| ---------------------- | ------------------------------------ | --------------- |
+| **Cloudflare Workers** | Serverless **code** (JavaScript)     | `*.workers.dev` |
+| **Cloudflare Pages**   | **Static sites** (HTML, CSS, assets) | `*.pages.dev`   |
 
 This site is **static files only**. It must live on **Pages**, not Workers.
 
@@ -17,15 +17,15 @@ The GitHub Action in this repo deploys to **Pages** only (`cloudflare/pages-acti
 
 Everything in **`public/`** is the website root:
 
-| File | Purpose |
-|------|---------|
-| `index.html` | Main page |
-| `styles.css` | Styles |
-| `favicon.svg` | Browser tab icon |
+| File           | Purpose                                |
+| -------------- | -------------------------------------- |
+| `index.html`   | Main page                              |
+| `styles.css`   | Styles                                 |
+| `favicon.svg`  | Browser tab icon                       |
 | `og-image.svg` | Open Graph / social preview (1200×630) |
-| `robots.txt` | Crawler rules |
-| `sitemap.xml` | Search engines (single URL for now) |
-| `_headers` | Security headers (Cloudflare Pages) |
+| `robots.txt`   | Crawler rules                          |
+| `sitemap.xml`  | Search engines (single URL for now)    |
+| `_headers`     | Security headers (Cloudflare Pages)    |
 
 **Cloudflare:** build output directory = **`public`**.
 
@@ -39,10 +39,10 @@ Everything in **`public/`** is the website root:
 2. Cloudflare → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**.
 3. Build settings:
 
-   | Setting | Value |
-   |--------|--------|
-   | Framework preset | **None** |
-   | Build command | *(empty)* |
+   | Setting                | Value        |
+   | ---------------------- | ------------ |
+   | Framework preset       | **None**     |
+   | Build command          | _(empty)_    |
    | Build output directory | **`public`** |
 
 4. Deploy. Open `https://<project>.pages.dev/`.
@@ -54,7 +54,6 @@ Everything in **`public/`** is the website root:
 1. Cloudflare → your **Pages** project → **Custom domains** → **Set up a domain**.
 2. Add `www` and/or apex; follow DNS prompts (easiest if DNS is already on Cloudflare).
 3. **Update site URLs** everywhere you still have the default Pages hostname:
-
    - `public/index.html` — `canonical`, `og:url`, `og:image` (and add a real **1200×630** `og-image.png` later if you want rich previews on all networks).
    - `public/robots.txt` — `Sitemap:` line.
    - `public/sitemap.xml` — `<loc>`.
@@ -67,7 +66,6 @@ Everything in **`public/`** is the website root:
 
 1. Cloudflare **Account ID** + **API token** (Pages: **Edit**).
 2. GitHub repo → **Settings** → **Secrets and variables** → **Actions**:
-
    - `CLOUDFLARE_API_TOKEN`
    - `CLOUDFLARE_ACCOUNT_ID`
 

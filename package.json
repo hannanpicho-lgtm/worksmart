@@ -1,5 +1,13 @@
 {
   "name": "worksmart",
   "private": true,
-  "description": "WorkSmart static site (Cloudflare Pages → public/)"
+  "description": "WorkSmart static site (Cloudflare Pages → public/)",
+  "scripts": {
+    "dev": "npx --yes serve public -l 4173",
+    "format": "prettier --write \"**/*.{md,html,css,yml,yaml,json}\"",
+    "format:check": "prettier --check \"**/*.{md,html,css,yml,yaml,json}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.8.3"
+  }
 }
