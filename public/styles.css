@@ -405,6 +405,38 @@ ol {
   letter-spacing: 0.01em;
 }
 
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-3);
+  margin: 0 0 var(--s-8);
+}
+
+.hero-proof {
+  display: grid;
+  gap: var(--s-3);
+  max-width: 30rem;
+  margin: 0 auto;
+  padding: var(--s-5);
+  border: 1px solid var(--line-subtle);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.hero-proof li {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.005em;
+}
+
+.hero-proof strong {
+  color: #dce3ee;
+  font-family: var(--font-display);
+  font-weight: 600;
+  margin-right: var(--s-2);
+}
+
 /* Buttons */
 .btn {
   display: inline-flex;
@@ -938,6 +970,11 @@ ol {
 
   .price-card--featured {
     grid-column: 1 / -1;
+  }
+
+  .hero-actions {
+    flex-direction: row;
+    justify-content: center;
   }
 }
 
