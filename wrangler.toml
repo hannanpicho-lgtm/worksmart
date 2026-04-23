@@ -1,0 +1,6 @@
+# Project name: worksmart (must match the Pages project in the Cloudflare dashboard.)
+# Wrangler: npx wrangler pages deploy public --project-name=worksmart
+# Git + Pages: build output directory = public
+
+name = "worksmart"
+compatibility_date = "2024-12-01"

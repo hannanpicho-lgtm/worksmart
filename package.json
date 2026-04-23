@@ -1,0 +1,5 @@
+{
+  "name": "worksmart",
+  "private": true,
+  "description": "WorkSmart static site (Cloudflare Pages → public/)"
+}

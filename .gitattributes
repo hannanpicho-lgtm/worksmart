@@ -1,0 +1,2 @@
+* text=auto eol=lf
+*.{html,css,md,json,xml,svg,txt,headers,yml} text
