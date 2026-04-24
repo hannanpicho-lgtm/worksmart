@@ -14,7 +14,7 @@ function run(command, commandArgs, options = {}) {
   const result = spawnSync(command, commandArgs, {
     encoding: "utf8",
     stdio: options.stdio ?? "pipe",
-    shell: false,
+    shell: options.shell ?? false,
   });
 
   if (options.allowFailure) {
@@ -23,6 +23,7 @@ function run(command, commandArgs, options = {}) {
 
   if (result.status !== 0) {
     const message =
+      result.error?.message ||
       result.stderr?.trim() ||
       result.stdout?.trim() ||
       `Command failed with exit code ${result.status ?? "unknown"}.`;
@@ -37,8 +38,11 @@ function git(...commandArgs) {
 }
 
 function npmRun(scriptName) {
-  const cmd = process.platform === "win32" ? "npm.cmd" : "npm";
-  return run(cmd, ["run", scriptName], { stdio: "inherit" });
+  const useShell = process.platform === "win32";
+  return run("npm", ["run", scriptName], {
+    stdio: "inherit",
+    shell: useShell,
+  });
 }
 
 function getBranchName() {
@@ -133,7 +137,14 @@ async function main() {
 
   if (!skipChecks) {
     printBanner("Running checks");
-    npmRun("format:check");
+    try {
+      npmRun("format:check");
+    } catch (error) {
+      throw new Error(
+        `Preflight check failed.\n${error.message}\n\n` +
+          "Tip: run `npm run format` to auto-fix formatting, then retry `npm run ship`.",
+      );
+    }
   }
 
   printBanner("Creating commit");
