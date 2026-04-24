@@ -10,6 +10,7 @@
     "pipeline": "node scripts/pipeline.mjs",
     "pipeline:dry": "node scripts/pipeline.mjs --dry-run",
     "pipeline:release": "node scripts/pipeline.mjs --release --auto-merge",
+    "verify:prod": "node scripts/verify-prod.mjs",
     "ship": "node scripts/ship.mjs",
     "ship:quick": "node scripts/ship.mjs --quick",
     "ship:open": "node scripts/ship.mjs --open"

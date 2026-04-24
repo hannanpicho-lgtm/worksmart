@@ -313,6 +313,7 @@ async function main() {
     const token = requireEnv("CLOUDFLARE_API_TOKEN");
     const accountId = requireEnv("CLOUDFLARE_ACCOUNT_ID");
     const projectName = requireEnv("CLOUDFLARE_PROJECT_NAME");
+      const deployMode = config.deploy.mode ?? "manual";
       const targetSha = dryRun ? headSha("HEAD") : headSha("HEAD");
 
       const environments = config.deploy.environments ?? ["production"];
@@ -330,6 +331,18 @@ async function main() {
             "Production deploy requested before merge. Use preview environment for feature branches, or run release mode after merge.",
           );
         }
+        if (deployMode === "manual") {
+          process.stdout.write(
+            `✔ Stage: deploy skipped for ${environment} (manual mode). Trigger from Cloudflare UI.\n`,
+          );
+          runLog.deployments.push({
+            environment,
+            skipped: true,
+            reason: "manual-mode",
+          });
+          continue;
+        }
+
         const latest = await getLatestDeployment({
           token,
           accountId,
@@ -364,9 +377,15 @@ async function main() {
             : "CLOUDFLARE_DEPLOY_HOOK_URL_PREVIEW";
         const hookUrl = process.env[hookEnvVar];
 
-        if (hookUrl) {
+        if (deployMode === "hook") {
+          if (!hookUrl) {
+            throw new Error(
+              `Deploy mode is "hook" but ${hookEnvVar} is not set.\n` +
+                "Create a Pages deploy hook and export the env variable.",
+            );
+          }
           await triggerDeployHook({ hookUrl });
-        } else {
+        } else if (deployMode === "api") {
           try {
             await triggerPagesDeployment({
               token,
@@ -384,6 +403,10 @@ async function main() {
             }
             throw error;
           }
+        } else {
+          throw new Error(
+            `Unknown deploy mode "${deployMode}". Valid: manual | hook | api`,
+          );
         }
         process.stdout.write(`✔ Stage: deploy triggered (${environment})\n`);
 
