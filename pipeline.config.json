@@ -15,6 +15,7 @@
   },
   "deploy": {
     "enabled": true,
+    "mode": "manual",
     "environments": ["preview"],
     "productionUrl": "https://worksmart-188.pages.dev/",
     "verifyContains": ["worksmart0226@gmail.com", "worksmart-lockup.svg"],

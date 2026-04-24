@@ -1,12 +1,37 @@
 import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 
-export function acquireLock(lockPath) {
+function processAlive(pid) {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function acquireLock(lockPath, { staleAfterMs = 15 * 60 * 1000 } = {}) {
   if (existsSync(lockPath)) {
-    const existing = readFileSync(lockPath, "utf8");
-    throw new Error(
-      `Another pipeline run appears active.\nLock file: ${lockPath}\nLock data: ${existing}\n` +
-        "If this is stale, delete the lock file and retry.",
-    );
+    const existingRaw = readFileSync(lockPath, "utf8");
+    let existing = null;
+    try {
+      existing = JSON.parse(existingRaw);
+    } catch {
+      existing = null;
+    }
+
+    const startedAt = existing?.startedAt ? Date.parse(existing.startedAt) : null;
+    const isOld = startedAt ? Date.now() - startedAt > staleAfterMs : true;
+    const pid = Number(existing?.pid);
+    const pidAlive = Number.isFinite(pid) ? processAlive(pid) : false;
+
+    if (isOld || !pidAlive) {
+      rmSync(lockPath, { force: true });
+    } else {
+      throw new Error(
+        `Another pipeline run appears active.\nLock file: ${lockPath}\nLock data: ${existingRaw}\n` +
+          "Wait for it to finish, or retry later.",
+      );
+    }
   }
   writeFileSync(
     lockPath,

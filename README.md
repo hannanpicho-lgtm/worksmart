@@ -55,6 +55,7 @@ Commands:
 - `npm run pipeline` - normal pipeline
 - `npm run pipeline:dry` - dry run (no commit/push/deploy)
 - `npm run pipeline:release` - release mode (`--release --auto-merge`)
+- `npm run verify:prod` - verify live production markers only
 
 Required environment variables (see `.env.pipeline.example`):
 
@@ -72,6 +73,14 @@ Safety/fallback behaviors:
 - If API tokens are missing, pipeline fails with explicit setup guidance
 - If Cloudflare API deploy trigger requires a manifest (Git-connected Pages), pipeline instructs deploy-hook setup
 - Deploy verification fails if expected production markers are absent
+
+### Deploy mode normalization
+
+Set `deploy.mode` in `pipeline.config.json`:
+
+- `manual` - pipeline never triggers deploy; it logs manual action required
+- `hook` - pipeline triggers Cloudflare deploy hooks (`CLOUDFLARE_DEPLOY_HOOK_URL_*`)
+- `api` - pipeline triggers Cloudflare Pages deployment API directly
 
 ## Production content audit
 
