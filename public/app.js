@@ -1,6 +1,25 @@
 const contactForm = document.getElementById("contact-form");
 const statusEl = document.getElementById("contact-form-status");
+const debugPanel = document.getElementById("form-debug-panel");
+const debugLog = document.getElementById("form-debug-log");
 const turnstilePlaceholder = "REPLACE_WITH_YOUR_TURNSTILE_SITE_KEY";
+const debugMode = new URLSearchParams(window.location.search).get("debugForm") === "1";
+
+if (debugMode && debugPanel) {
+  debugPanel.classList.add("is-visible");
+}
+
+function renderDebugEvents() {
+  if (!debugMode || !debugLog) return;
+  const events = window.__worksmartEvents || [];
+  const recent = events.slice(-8).map((entry) => ({
+    event_name: entry.event_name,
+    has_company: entry.has_company,
+    message_size: entry.message_size,
+    timestamp: new Date(entry.timestamp).toISOString(),
+  }));
+  debugLog.textContent = recent.length > 0 ? JSON.stringify(recent, null, 2) : "No events yet.";
+}
 
 function normalizeField(value) {
   return String(value || "").trim();
@@ -30,6 +49,7 @@ function trackFormEvent(eventName, metadata = {}) {
   // Lightweight internal queue for debugging/inspection.
   window.__worksmartEvents = window.__worksmartEvents || [];
   window.__worksmartEvents.push(payload);
+  renderDebugEvents();
 }
 
 function setStatus(message, type = "") {

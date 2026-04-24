@@ -1165,6 +1165,36 @@ ol {
   font-size: var(--text-sm);
 }
 
+.form-debug {
+  display: none;
+  margin-top: var(--s-6);
+  border: 1px dashed var(--line-default);
+  border-radius: var(--radius-md);
+  padding: var(--s-4);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.form-debug.is-visible {
+  display: block;
+}
+
+.form-debug-title {
+  margin: 0 0 var(--s-3);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+#form-debug-log {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
+  color: #b6c1d3;
+  white-space: pre-wrap;
+  max-height: 12rem;
+  overflow: auto;
+}
+
 .link {
   color: #6eb8c4;
   text-decoration: underline;
