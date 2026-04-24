@@ -254,14 +254,28 @@ ol {
   font-size: 1rem;
 }
 
-.logo-img {
+.logo-mark-img {
   display: block;
-  height: 2.125rem;
+  height: 2rem;
   width: auto;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35));
 }
 
-.logo-img--sm {
-  height: 1.75rem;
+.logo-mark-img--sm {
+  height: 1.45rem;
+}
+
+.logo-text {
+  font-family: "Montserrat", var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
+}
+
+.logo-text--sm {
+  font-size: 0.95rem;
 }
 
 .nav-link {

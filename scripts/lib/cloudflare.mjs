@@ -25,6 +25,16 @@ export async function triggerPagesDeployment({
   return res?.result;
 }
 
+export async function triggerDeployHook({ hookUrl }) {
+  const res = await fetch(hookUrl, { method: "POST" });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(
+      `Deploy hook trigger failed (${res.status}). ${text || res.statusText || "No response body"}`,
+    );
+  }
+}
+
 export async function getLatestDeployment({
   token,
   accountId,

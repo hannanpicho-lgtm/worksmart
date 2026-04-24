@@ -15,7 +15,7 @@
   },
   "deploy": {
     "enabled": true,
-    "environments": ["production"],
+    "environments": ["preview"],
     "productionUrl": "https://worksmart-188.pages.dev/",
     "verifyContains": ["worksmart0226@gmail.com", "worksmart-lockup.svg"],
     "pollIntervalMs": 8000,
