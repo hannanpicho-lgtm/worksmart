@@ -36,6 +36,40 @@ Useful flags:
 - `node scripts/ship.mjs --no-check` skips formatting check (only when needed)
 - `node scripts/ship.mjs --allow-main` allows shipping from `main` (not recommended)
 
+## Deterministic local pipeline (GitHub Actions replacement)
+
+Use `npm run pipeline` for a strict fail-fast local CI/CD run:
+
+- Validates branch safety rules and changed files
+- Executes quality gates (`format:check`, `content:check`)
+- Commits and pushes deterministically
+- Creates/updates PR via GitHub API
+- Triggers and polls Cloudflare production deployment
+- Verifies live production markers before success
+- Writes a machine-readable run log under `logs/`
+- Tracks explicit states:
+  `PENDING -> VALIDATING -> PRECHECK -> COMMITTING -> PUSHING -> PR_CREATING -> DEPLOYING -> VERIFYING -> SUCCESS/FAILED`
+
+Commands:
+
+- `npm run pipeline` - normal pipeline
+- `npm run pipeline:dry` - dry run (no commit/push/deploy)
+- `npm run pipeline:release` - release mode (`--release --auto-merge`)
+
+Required environment variables (see `.env.pipeline.example`):
+
+- `GITHUB_TOKEN`
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_PROJECT_NAME`
+
+Safety/fallback behaviors:
+
+- Non-release runs are blocked on `main`/`master`
+- Any stage failure hard-stops the pipeline
+- If API tokens are missing, pipeline fails with explicit setup guidance
+- Deploy verification fails if expected production markers are absent
+
 ## Production content audit
 
 Run `npm run content:check` before release-oriented PRs. It fails if known placeholder values are still present in:
