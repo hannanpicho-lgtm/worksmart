@@ -1,5 +1,6 @@
 const contactForm = document.getElementById("contact-form");
 const statusEl = document.getElementById("contact-form-status");
+const turnstilePlaceholder = "REPLACE_WITH_YOUR_TURNSTILE_SITE_KEY";
 
 function setStatus(message, type = "") {
   if (!statusEl) return;
@@ -16,6 +17,23 @@ async function submitContactForm(event) {
   if (!endpoint || endpoint.includes("REPLACE_WITH_YOUR_FORM_ID")) {
     setStatus(
       "Contact form is not configured yet. Set a valid Formspree endpoint in index.html.",
+      "is-error",
+    );
+    return;
+  }
+
+  const turnstileSiteKey = contactForm.dataset.turnstileSitekey || "";
+  const turnstileToken = String(
+    contactForm.querySelector('input[name="cf-turnstile-response"]')?.value || "",
+  ).trim();
+  if (turnstileSiteKey && !turnstileSiteKey.includes(turnstilePlaceholder)) {
+    if (!turnstileToken) {
+      setStatus("Please complete the security challenge before submitting.", "is-error");
+      return;
+    }
+  } else {
+    setStatus(
+      "Turnstile is not configured yet. Add your Turnstile site key in index.html.",
       "is-error",
     );
     return;
@@ -41,6 +59,9 @@ async function submitContactForm(event) {
     }
 
     contactForm.reset();
+    if (window.turnstile && typeof window.turnstile.reset === "function") {
+      window.turnstile.reset();
+    }
     setStatus("Thanks. Your request was submitted successfully.", "is-success");
   } catch {
     setStatus(
