@@ -8,3 +8,5 @@ node_modules/
 .wrangler/
 dist/
 coverage/
+logs/
+.pipeline.lock

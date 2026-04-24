@@ -1,0 +1,34 @@
+{
+  "defaultBaseBranch": "main",
+  "lockFile": ".pipeline.lock",
+  "allowedBranchPrefixes": [
+    "feature/",
+    "fix/",
+    "chore/",
+    "docs/",
+    "refactor/",
+    "release/"
+  ],
+  "qualityGates": {
+    "required": ["npm run format:check", "npm run content:check"],
+    "optionalFromNpmScripts": ["lint", "build", "test"]
+  },
+  "deploy": {
+    "enabled": true,
+    "environments": ["production"],
+    "productionUrl": "https://worksmart-188.pages.dev/",
+    "verifyContains": ["worksmart0226@gmail.com", "worksmart-lockup.svg"],
+    "pollIntervalMs": 8000,
+    "timeoutMs": 300000,
+    "skipDuplicateCommitDeploy": true
+  },
+  "github": {
+    "autoCreatePr": true,
+    "autoMerge": false,
+    "mergeMethod": "squash"
+  },
+  "safety": {
+    "requireCleanWorkingTreeAfterCommit": true,
+    "blockMainBranchForNonRelease": true
+  }
+}
