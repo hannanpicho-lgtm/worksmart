@@ -571,6 +571,8 @@ ol {
 .grid-4 .card-glass:hover,
 .timeline-item.card-glass:hover,
 .exp-block.card-glass:hover,
+.proof-metric.card-glass:hover,
+.proof-quote.card-glass:hover,
 .contact-card.card-glass:hover {
   border-color: var(--line-strong);
   background: var(--glass-elevated);
@@ -873,6 +875,98 @@ ol {
   margin-bottom: 0.2rem;
 }
 
+/* Social proof */
+.proof-strip-label {
+  text-align: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin: 0 0 var(--s-4);
+  font-family: var(--font-sans);
+}
+
+.proof-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-3);
+  margin: 0 0 var(--s-10);
+  padding: 0;
+  list-style: none;
+}
+
+.proof-pill {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: var(--s-2) var(--s-4);
+  border-radius: 9999px;
+  border: 1px solid var(--line-default);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.proof-metrics {
+  margin-bottom: var(--s-8);
+}
+
+.proof-metric {
+  text-align: center;
+  padding: var(--s-6);
+}
+
+.proof-metric-value {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin: 0 0 var(--s-2);
+  background: linear-gradient(180deg, #ffffff 0%, #b8c4de 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.proof-metric-label {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-body);
+}
+
+.proof-quote {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: var(--s-8);
+}
+
+.proof-quote-text {
+  margin: 0 0 var(--s-6);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: var(--leading-relaxed);
+  color: var(--text-primary);
+  font-style: italic;
+  letter-spacing: 0.01em;
+}
+
+.proof-quote-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  font-size: var(--text-sm);
+}
+
+.proof-quote-name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.proof-quote-org {
+  color: var(--text-tertiary);
+}
+
 /* Contact */
 .contact-wrap {
   max-width: 44rem;
@@ -1030,6 +1124,8 @@ ol {
   .grid-4 .card-glass:hover,
   .timeline-item.card-glass:hover,
   .exp-block.card-glass:hover,
+  .proof-metric.card-glass:hover,
+  .proof-quote.card-glass:hover,
   .contact-card.card-glass:hover {
     transform: translateY(-2px);
   }
@@ -1065,6 +1161,8 @@ ol {
   .grid-4 .card-glass:hover,
   .timeline-item.card-glass:hover,
   .exp-block.card-glass:hover,
+  .proof-metric.card-glass:hover,
+  .proof-quote.card-glass:hover,
   .contact-card.card-glass:hover,
   .btn-primary:hover,
   .btn-ghost:hover,
