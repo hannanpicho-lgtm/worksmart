@@ -38,11 +38,13 @@ function git(...commandArgs) {
 }
 
 function npmRun(scriptName) {
-  const useShell = process.platform === "win32";
-  return run("npm", ["run", scriptName], {
-    stdio: "inherit",
-    shell: useShell,
-  });
+  if (process.platform === "win32") {
+    // Avoid Node shell=true deprecation warning on Windows.
+    return run("cmd.exe", ["/d", "/s", "/c", `npm run ${scriptName}`], {
+      stdio: "inherit",
+    });
+  }
+  return run("npm", ["run", scriptName], { stdio: "inherit" });
 }
 
 function getBranchName() {
