@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://worksmart.pages.dev/sitemap.xml
+Sitemap: https://worksmart-188.pages.dev/sitemap.xml

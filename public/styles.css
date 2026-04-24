@@ -234,7 +234,9 @@ ol {
   font-size: 1.0625rem;
   letter-spacing: -0.02em;
   color: var(--text-primary);
-  transition: color var(--t-interact) var(--ease-out);
+  transition:
+    color var(--t-interact) var(--ease-out),
+    filter var(--t-interact) var(--ease-out);
 }
 
 .logo:hover,
@@ -243,19 +245,23 @@ ol {
   outline: none;
 }
 
+.logo:hover .logo-img,
+.logo:focus-visible .logo-img {
+  filter: brightness(1.08);
+}
+
 .logo--sm {
   font-size: 1rem;
 }
 
-.logo-mark {
+.logo-img {
   display: block;
-  width: 1.7rem;
-  height: 1.7rem;
-  border-radius: var(--radius-sm);
-  background: linear-gradient(145deg, #637eea 0%, #5a4fcf 45%, #4a8fa8 100%);
-  box-shadow:
-    var(--shadow-1),
-    0 4px 14px -2px rgba(50, 70, 150, 0.4);
+  height: 2.125rem;
+  width: auto;
+}
+
+.logo-img--sm {
+  height: 1.75rem;
 }
 
 .nav-link {
