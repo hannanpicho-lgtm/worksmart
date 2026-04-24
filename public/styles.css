@@ -228,7 +228,7 @@ ol {
 .logo {
   display: inline-flex;
   align-items: center;
-  gap: var(--s-3);
+  gap: 0.65rem;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.0625rem;
@@ -245,8 +245,8 @@ ol {
   outline: none;
 }
 
-.logo:hover .logo-img,
-.logo:focus-visible .logo-img {
+.logo:hover .logo-mark,
+.logo:focus-visible .logo-mark {
   filter: brightness(1.08);
 }
 
@@ -254,28 +254,28 @@ ol {
   font-size: 1rem;
 }
 
-.logo-mark-img {
+.logo-mark {
   display: block;
-  height: 2rem;
-  width: auto;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35));
-}
-
-.logo-mark-img--sm {
-  height: 1.45rem;
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(145deg, #637eea 0%, #5a4fcf 45%, #4a8fa8 100%);
+  box-shadow:
+    var(--shadow-1),
+    0 4px 14px -2px rgba(50, 70, 150, 0.4);
 }
 
 .logo-text {
   font-family: "Montserrat", var(--font-display);
-  font-size: 1.1rem;
+  font-size: 1.02rem;
   font-weight: 700;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.01em;
   color: var(--text-primary);
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.28);
 }
 
 .logo-text--sm {
-  font-size: 0.95rem;
+  font-size: 0.89rem;
 }
 
 .nav-link {
