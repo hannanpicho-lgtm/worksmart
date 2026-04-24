@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">WorkSmart mark</title>
+  <desc id="desc">Gear and light bulb hybrid icon for WorkSmart.</desc>
+  <defs>
+    <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E7EEF7" />
+      <stop offset="0.55" stop-color="#D7DEE8" />
+      <stop offset="1" stop-color="#B9C3D1" />
+    </linearGradient>
+    <linearGradient id="metalShadow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9AA7B8" />
+      <stop offset="1" stop-color="#7F8B9A" />
+    </linearGradient>
+  </defs>
+  <path
+    fill="url(#metal)"
+    stroke="#0B1220"
+    stroke-opacity="0.35"
+    stroke-width="3"
+    d="M128 18l14 24 28-8 18 24-14 24 14 24-18 24-28-8-14 24h-28l-14-24-28 8-18-24 14-24-14-24 18-24 28 8 14-24z"
+  />
+  <path
+    fill="#070B12"
+    stroke="#0B1220"
+    stroke-opacity="0.25"
+    stroke-width="2"
+    d="M128 62c22 0 40 18 40 40 0 14-7 26-18 33v18c0 8-7 15-15 15h-14c-8 0-15-7-15-15v-18c-11-7-18-19-18-33 0-22 18-40 40-40z"
+  />
+  <path
+    fill="none"
+    stroke="#D7DEE8"
+    stroke-width="4"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    d="M128 86c-10 10-10 22 0 30 10-8 10-20 0-30z"
+  />
+  <rect
+    x="108"
+    y="168"
+    width="40"
+    height="34"
+    rx="8"
+    fill="url(#metalShadow)"
+    stroke="#0B1220"
+    stroke-opacity="0.35"
+    stroke-width="3"
+  />
+  <path
+    fill="none"
+    stroke="#0B1220"
+    stroke-opacity="0.35"
+    stroke-width="3"
+    stroke-linecap="round"
+    d="M112 178h32 M112 186h32 M112 194h32"
+  />
+</svg>
