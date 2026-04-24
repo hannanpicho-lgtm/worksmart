@@ -22,7 +22,10 @@ function run(command, commandArgs, options = {}) {
   }
 
   if (result.status !== 0) {
-    const message = result.stderr?.trim() || result.stdout?.trim() || "Command failed.";
+    const message =
+      result.stderr?.trim() ||
+      result.stdout?.trim() ||
+      `Command failed with exit code ${result.status ?? "unknown"}.`;
     throw new Error(`${command} ${commandArgs.join(" ")}\n${message}`);
   }
 
@@ -46,7 +49,7 @@ function getDirtyFiles() {
   const outputText = git("status", "--porcelain").stdout;
   return outputText
     .split("\n")
-    .map((line) => line.trim())
+    .map((line) => line)
     .filter(Boolean)
     .map((line) => line.slice(3));
 }
