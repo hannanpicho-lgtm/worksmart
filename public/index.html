@@ -61,6 +61,11 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Montserrat:wght@700&family=Outfit:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
+    <script
+      src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+      async
+      defer
+    ></script>
     <!-- Web Analytics: enable in Cloudflare (Analytics → Web Analytics) for your domain, or uncomment and set token from the beacon snippet. -->
     <!--
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "PASTE_TOKEN"}'></script>
@@ -426,6 +431,7 @@
               id="contact-form"
               class="contact-form"
               data-endpoint="https://formspree.io/f/xqewnzon"
+              data-turnstile-sitekey="REPLACE_WITH_YOUR_TURNSTILE_SITE_KEY"
               novalidate
             >
               <input
@@ -471,6 +477,13 @@
                   required
                 ></textarea>
               </label>
+              <div class="contact-form-turnstile">
+                <div
+                  class="cf-turnstile"
+                  data-sitekey="REPLACE_WITH_YOUR_TURNSTILE_SITE_KEY"
+                  data-theme="dark"
+                ></div>
+              </div>
               <div class="contact-form-actions">
                 <button class="btn btn-primary" type="submit">
                   Submit request
