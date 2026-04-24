@@ -18,7 +18,7 @@
     "mode": "manual",
     "environments": ["preview"],
     "productionUrl": "https://worksmart-188.pages.dev/",
-    "verifyContains": ["worksmart0226@gmail.com", "worksmart-lockup.svg"],
+    "verifyContains": ["worksmart0226@gmail.com", "favicon.svg"],
     "pollIntervalMs": 8000,
     "timeoutMs": 300000,
     "skipDuplicateCommitDeploy": true
