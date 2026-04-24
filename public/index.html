@@ -418,12 +418,70 @@
                 faster first response.
               </p>
               <div class="contact-actions">
-                <a class="btn btn-primary" href="mailto:worksmart0226@gmail.com"
-                  >Email us</a
-                >
+                <a class="btn btn-primary" href="#contact-form">Send inquiry</a>
                 <a class="btn btn-ghost" href="#packages">See packages</a>
               </div>
             </header>
+            <form
+              id="contact-form"
+              class="contact-form"
+              data-endpoint="https://formspree.io/f/REPLACE_WITH_YOUR_FORM_ID"
+              novalidate
+            >
+              <input
+                type="text"
+                name="_gotcha"
+                tabindex="-1"
+                autocomplete="off"
+                class="contact-form-honeypot"
+                aria-hidden="true"
+              />
+              <div class="contact-form-grid">
+                <label class="contact-form-field">
+                  <span>Name</span>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Your name"
+                    minlength="2"
+                    required
+                  />
+                </label>
+                <label class="contact-form-field">
+                  <span>Email</span>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="you@company.com"
+                    required
+                  />
+                </label>
+              </div>
+              <label class="contact-form-field">
+                <span>Company (optional)</span>
+                <input type="text" name="company" placeholder="Company name" />
+              </label>
+              <label class="contact-form-field">
+                <span>Project details</span>
+                <textarea
+                  name="message"
+                  rows="4"
+                  placeholder="Scope, timeline, and budget range"
+                  minlength="10"
+                  required
+                ></textarea>
+              </label>
+              <div class="contact-form-actions">
+                <button class="btn btn-primary" type="submit">
+                  Submit request
+                </button>
+                <p
+                  class="contact-form-status"
+                  id="contact-form-status"
+                  role="status"
+                ></p>
+              </div>
+            </form>
             <!-- Update email, address, and hours for production. -->
             <div class="contact-grid">
               <div class="contact-block">
@@ -464,5 +522,6 @@
         </p>
       </div>
     </footer>
+    <script src="app.js" defer></script>
   </body>
 </html>
