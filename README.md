@@ -62,12 +62,15 @@ Required environment variables (see `.env.pipeline.example`):
 - `CLOUDFLARE_API_TOKEN`
 - `CLOUDFLARE_ACCOUNT_ID`
 - `CLOUDFLARE_PROJECT_NAME`
+- `CLOUDFLARE_DEPLOY_HOOK_URL_PREVIEW` (recommended for feature-branch preview deploys)
+- `CLOUDFLARE_DEPLOY_HOOK_URL_PRODUCTION` (recommended for release/merged production deploys)
 
 Safety/fallback behaviors:
 
 - Non-release runs are blocked on `main`/`master`
 - Any stage failure hard-stops the pipeline
 - If API tokens are missing, pipeline fails with explicit setup guidance
+- If Cloudflare API deploy trigger requires a manifest (Git-connected Pages), pipeline instructs deploy-hook setup
 - Deploy verification fails if expected production markers are absent
 
 ## Production content audit

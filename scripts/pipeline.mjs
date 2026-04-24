@@ -16,6 +16,7 @@ import { parseGitHubRepo, upsertPr, mergePr } from "./lib/github.mjs";
 import {
   deploymentCommitSha,
   getLatestDeployment,
+  triggerDeployHook,
   triggerPagesDeployment,
   waitForDeploymentSuccess,
 } from "./lib/cloudflare.mjs";
@@ -320,6 +321,15 @@ async function main() {
       for (const environment of environments) {
         const deployBranch =
           environment === "preview" ? branch : config.defaultBaseBranch;
+        if (
+          environment === "production" &&
+          !releaseMode &&
+          !(autoMerge || config.github.autoMerge)
+        ) {
+          throw new Error(
+            "Production deploy requested before merge. Use preview environment for feature branches, or run release mode after merge.",
+          );
+        }
         const latest = await getLatestDeployment({
           token,
           accountId,
@@ -348,12 +358,33 @@ async function main() {
           continue;
         }
 
-        await triggerPagesDeployment({
-          token,
-          accountId,
-          projectName,
-          branch: deployBranch,
-        });
+        const hookEnvVar =
+          environment === "production"
+            ? "CLOUDFLARE_DEPLOY_HOOK_URL_PRODUCTION"
+            : "CLOUDFLARE_DEPLOY_HOOK_URL_PREVIEW";
+        const hookUrl = process.env[hookEnvVar];
+
+        if (hookUrl) {
+          await triggerDeployHook({ hookUrl });
+        } else {
+          try {
+            await triggerPagesDeployment({
+              token,
+              accountId,
+              projectName,
+              branch: deployBranch,
+            });
+          } catch (error) {
+            if (String(error.message).includes("manifest")) {
+              throw new Error(
+                `Cloudflare API rejected deployment trigger for Git-connected Pages project.\n` +
+                  `Create a Pages deploy hook and set ${hookEnvVar}.\n` +
+                  "Cloudflare dashboard -> Workers & Pages -> your project -> Settings -> Build & deployments -> Deploy hooks.",
+              );
+            }
+            throw error;
+          }
+        }
         process.stdout.write(`✔ Stage: deploy triggered (${environment})\n`);
 
         const deployment = await waitForDeploymentSuccess({
