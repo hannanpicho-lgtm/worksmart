@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "npx --yes serve public -l 4173",
     "format": "prettier --write \"**/*.{md,html,css,yml,yaml,json}\"",
-    "format:check": "prettier --check \"**/*.{md,html,css,yml,yaml,json}\""
+    "format:check": "prettier --check \"**/*.{md,html,css,yml,yaml,json}\"",
+    "ship": "node scripts/ship.mjs",
+    "ship:quick": "node scripts/ship.mjs --quick",
+    "ship:open": "node scripts/ship.mjs --open"
   },
   "devDependencies": {
     "prettier": "^3.8.3"
