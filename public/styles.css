@@ -982,6 +982,19 @@ ol {
   margin-bottom: var(--s-3);
 }
 
+.contact-note {
+  margin: 0 0 var(--s-6);
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-body);
+}
+
+.contact-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
 .contact-grid {
   display: grid;
   gap: var(--s-6);
@@ -1069,6 +1082,11 @@ ol {
   .hero-actions {
     flex-direction: row;
     justify-content: center;
+  }
+
+  .contact-actions {
+    flex-direction: row;
+    align-items: center;
   }
 }
 
