@@ -967,6 +967,51 @@ ol {
   color: var(--text-tertiary);
 }
 
+/* FAQ */
+.faq-list {
+  display: grid;
+  gap: var(--s-4);
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+.faq-item {
+  padding: var(--s-5) var(--s-6);
+}
+
+.faq-item summary {
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item summary::after {
+  content: "+";
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--text-secondary);
+}
+
+.faq-item[open] summary::after {
+  content: "−";
+}
+
+.faq-item .card-text {
+  margin-top: var(--s-4);
+}
+
 /* Contact */
 .contact-wrap {
   max-width: 44rem;
