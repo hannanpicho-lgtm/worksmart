@@ -1,32 +1,24 @@
+import {
+  bucketMessageLength,
+  defaultMetrics,
+  mergeMetrics,
+  metricsStorageKey,
+  normalizeField,
+  resolveIngestUrl,
+} from "./form-utils.mjs";
+
 const contactForm = document.getElementById("contact-form");
 const statusEl = document.getElementById("contact-form-status");
 const debugPanel = document.getElementById("form-debug-panel");
 const debugLog = document.getElementById("form-debug-log");
 const turnstilePlaceholder = "REPLACE_WITH_YOUR_TURNSTILE_SITE_KEY";
 const debugMode = new URLSearchParams(window.location.search).get("debugForm") === "1";
-const metricsStorageKey = "worksmart_form_metrics_v1";
-const dayMs = 24 * 60 * 60 * 1000;
-
-function defaultMetrics() {
-  return {
-    period_start: Date.now(),
-    total_attempts: 0,
-    total_success: 0,
-    total_error: 0,
-    total_blocked: 0,
-    blocked_endpoint_unconfigured: 0,
-    blocked_turnstile_incomplete: 0,
-    blocked_turnstile_unconfigured: 0,
-    blocked_honeypot: 0,
-  };
-}
 
 function loadMetrics() {
   try {
     const raw = window.localStorage.getItem(metricsStorageKey);
-    const parsed = raw ? JSON.parse(raw) : defaultMetrics();
-    const stale = !parsed.period_start || Date.now() - Number(parsed.period_start) > dayMs;
-    return stale ? defaultMetrics() : { ...defaultMetrics(), ...parsed };
+    const parsed = raw ? JSON.parse(raw) : null;
+    return mergeMetrics(parsed, Date.now());
   } catch {
     return defaultMetrics();
   }
@@ -63,18 +55,6 @@ function renderDebugEvents() {
   debugLog.textContent = recent.length > 0 ? JSON.stringify(recent, null, 2) : "No events yet.";
 }
 
-function normalizeField(value) {
-  return String(value || "").trim();
-}
-
-function bucketMessageLength(text) {
-  const size = normalizeField(text).length;
-  if (size === 0) return "empty";
-  if (size < 40) return "short";
-  if (size < 200) return "medium";
-  return "long";
-}
-
 function trackFormEvent(eventName, metadata = {}) {
   const payload = {
     event: "contact_form_event",
@@ -100,23 +80,6 @@ function setStatus(message, type = "") {
   statusEl.textContent = message;
   statusEl.classList.remove("is-success", "is-error");
   if (type) statusEl.classList.add(type);
-}
-
-function resolveIngestUrl(raw) {
-  try {
-    const url = new URL(raw);
-    const path = url.pathname.replace(/\/+$/, "") || "/";
-    if (path === "/ingest" || path.endsWith("/ingest")) {
-      return url.toString();
-    }
-    if (path === "/") {
-      url.pathname = "/ingest";
-      return url.toString();
-    }
-    return url.toString();
-  } catch {
-    return "";
-  }
 }
 
 function sendAnalyticsEvent(payload) {

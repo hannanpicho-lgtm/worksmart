@@ -32,7 +32,7 @@
   },
   "github": {
     "autoCreatePr": true,
-    "autoMerge": false,
+    "autoMerge": true,
     "mergeMethod": "squash"
   },
   "safety": {

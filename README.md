@@ -76,7 +76,8 @@ State flow (conceptual):
 
 ### Commands
 
-- `npm run pipeline` — normal pipeline
+- `npm run pipeline` — default fully automated pipeline (auto-merge enabled in config)
+- `npm run pipeline:full` — fully automated path (includes `--auto-merge`)
 - `npm run pipeline:dry` — dry run (no commit/push/deploy/Worker deploy)
 - `npm run pipeline:release` — release mode (`--release --auto-merge`)
 - `npm run verify:prod` — verify live production markers only
@@ -105,8 +106,6 @@ Flags (fatigue reducers / escape hatches):
 
 - `auto` — recommended default: if deploy hook env var exists, use `hook`; otherwise use `api`
 - If `api` fails with a Git-connected manifest error and a deploy hook exists, pipeline falls back to `hook` automatically
-
-- `manual` — no Pages deploy trigger from the pipeline (dashboard or other process)
 - `hook` — uses `CLOUDFLARE_DEPLOY_HOOK_URL_*`
 - `api` — uses the Pages deployment API (may fail on some Git-connected projects; hooks are the fallback)
 
