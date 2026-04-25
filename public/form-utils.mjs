@@ -56,3 +56,25 @@ export function resolveIngestUrl(raw) {
     return "";
   }
 }
+
+export function validateContactFields({ name, email, message }) {
+  const errors = {};
+  const normalizedName = normalizeField(name);
+  const normalizedEmail = normalizeField(email);
+  const normalizedMessage = normalizeField(message);
+
+  if (normalizedName.length < 2) {
+    errors.name = "Please enter your name (at least 2 characters).";
+  }
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailPattern.test(normalizedEmail)) {
+    errors.email = "Please enter a valid email address.";
+  }
+
+  if (normalizedMessage.length < 10) {
+    errors.message = "Please add at least 10 characters about your project.";
+  }
+
+  return errors;
+}

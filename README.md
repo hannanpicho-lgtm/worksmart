@@ -80,6 +80,8 @@ State flow (conceptual):
 - `npm run pipeline:full` — fully automated path (includes `--auto-merge`)
 - `npm run pipeline:dry` — dry run (no commit/push/deploy/Worker deploy)
 - `npm run pipeline:release` — release mode (`--release --auto-merge`)
+- `npm run deploy:prod` — deploy current `main` state to production and verify markers (works with clean tree)
+- `npm run deploy:preview` — deploy current branch to Cloudflare preview and wait for success
 - `npm run verify:prod` — verify live production markers only
 
 Flags (fatigue reducers / escape hatches):

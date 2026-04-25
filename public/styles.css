@@ -1108,6 +1108,24 @@ ol {
   background: rgba(255, 255, 255, 0.05);
 }
 
+.contact-form-field input[aria-invalid="true"],
+.contact-form-field textarea[aria-invalid="true"] {
+  border-color: rgba(223, 152, 152, 0.85);
+  background: rgba(223, 152, 152, 0.08);
+}
+
+.contact-form-error {
+  min-height: 1.2em;
+  margin: 0;
+  font-size: 0.75rem;
+  color: #df9898;
+}
+
+.contact-form button.is-loading {
+  opacity: 0.8;
+  pointer-events: none;
+}
+
 .contact-form-honeypot {
   position: absolute;
   left: -9999px;

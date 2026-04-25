@@ -5,6 +5,7 @@ import {
   metricsStorageKey,
   normalizeField,
   resolveIngestUrl,
+  validateContactFields,
 } from "./form-utils.mjs";
 
 const contactForm = document.getElementById("contact-form");
@@ -82,6 +83,36 @@ function setStatus(message, type = "") {
   if (type) statusEl.classList.add(type);
 }
 
+function setFieldError(fieldName, message = "") {
+  if (!contactForm) return;
+  const field = contactForm.querySelector(`[name="${fieldName}"]`);
+  const errorEl = contactForm.querySelector(`[data-error-for="${fieldName}"]`);
+  if (field) {
+    field.setAttribute("aria-invalid", message ? "true" : "false");
+  }
+  if (errorEl) {
+    errorEl.textContent = message;
+  }
+}
+
+function clearAllFieldErrors() {
+  if (!contactForm) return;
+  ["name", "email", "message"].forEach((field) => setFieldError(field, ""));
+}
+
+function validateContactFormFields(formData) {
+  const errors = validateContactFields({
+    name: formData.get("name"),
+    email: formData.get("email"),
+    message: formData.get("message"),
+  });
+  clearAllFieldErrors();
+  for (const [fieldName, message] of Object.entries(errors)) {
+    setFieldError(fieldName, message);
+  }
+  return errors;
+}
+
 function sendAnalyticsEvent(payload) {
   if (!contactForm) return;
   const analyticsEndpoint = normalizeField(contactForm.dataset.analyticsEndpoint);
@@ -122,6 +153,15 @@ async function submitContactForm(event) {
   if (!contactForm) return;
 
   const formData = new FormData(contactForm);
+  const fieldErrors = validateContactFormFields(formData);
+  if (Object.keys(fieldErrors).length > 0) {
+    setStatus("Please correct the highlighted fields and try again.", "is-error");
+    trackFormEvent("submit_blocked_client_validation", {
+      invalid_fields: Object.keys(fieldErrors).join(","),
+    });
+    return;
+  }
+
   const telemetry = {
     has_company: normalizeField(formData.get("company")).length > 0,
     message_size: bucketMessageLength(formData.get("message")),
@@ -173,7 +213,12 @@ async function submitContactForm(event) {
   }
 
   const submitButton = contactForm.querySelector('button[type="submit"]');
-  if (submitButton) submitButton.disabled = true;
+  const previousButtonText = submitButton?.textContent || "Submit request";
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.classList.add("is-loading");
+    submitButton.textContent = "Submitting...";
+  }
   setStatus("Submitting...");
 
   try {
@@ -202,7 +247,11 @@ async function submitContactForm(event) {
     bumpMetrics("total_error");
     trackFormEvent("submit_error", telemetry);
   } finally {
-    if (submitButton) submitButton.disabled = false;
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.classList.remove("is-loading");
+      submitButton.textContent = previousButtonText;
+    }
   }
 }
 
