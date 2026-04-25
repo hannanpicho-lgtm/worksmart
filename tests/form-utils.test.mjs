@@ -8,6 +8,7 @@ import {
   metricsAreStale,
   normalizeField,
   resolveIngestUrl,
+  validateContactFields,
 } from "../public/form-utils.mjs";
 
 test("normalizeField trims and stringifies values", () => {
@@ -69,4 +70,22 @@ test("metrics lifecycle helpers reset stale windows and merge active windows", (
   const mergedStale = mergeMetrics(stale, now);
   assert.equal(mergedStale.total_attempts, 0);
   assert.equal(mergedStale.period_start, now);
+});
+
+test("validateContactFields reports invalid name/email/message", () => {
+  const invalid = validateContactFields({
+    name: "A",
+    email: "bad-email",
+    message: "short",
+  });
+  assert.equal(typeof invalid.name, "string");
+  assert.equal(typeof invalid.email, "string");
+  assert.equal(typeof invalid.message, "string");
+
+  const valid = validateContactFields({
+    name: "Hannan",
+    email: "hannan@example.com",
+    message: "Need support with a scoped automation implementation.",
+  });
+  assert.deepEqual(valid, {});
 });
