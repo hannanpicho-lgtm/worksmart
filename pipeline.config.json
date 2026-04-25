@@ -14,7 +14,7 @@
     "optionalFromNpmScripts": ["lint", "build", "test"]
   },
   "deploy": {
-    "enabled": true,
+    "enabled": false,
     "mode": "auto",
     "environments": ["auto"],
     "productionUrl": "https://worksmart-188.pages.dev/",

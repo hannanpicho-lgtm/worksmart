@@ -66,8 +66,8 @@ This repo’s **`npm run pipeline`** is designed to reproduce that **same two-la
 - Commits and pushes
 - **If `workers/form-analytics/` changed:** deploys the form-ingest Worker via Wrangler (skips automatically when that folder is untouched)
 - Creates/updates a PR via GitHub API
-- Triggers Cloudflare Pages deploy and waits (mode can auto-resolve)
-- Optionally verifies live production markers
+- Uses GitHub merge + Cloudflare Git auto-deploy as default (no local deploy API calls)
+- Keeps production verification available via `npm run verify:prod`
 - Writes a machine-readable run log under `logs/`
 
 State flow (conceptual):
@@ -80,14 +80,22 @@ State flow (conceptual):
 - `npm run pipeline:full` — fully automated path (includes `--auto-merge`)
 - `npm run pipeline:dry` — dry run (no commit/push/deploy/Worker deploy)
 - `npm run pipeline:release` — release mode (`--release --auto-merge`)
-- `npm run deploy:prod` — deploy current `main` state to production and verify markers (works with clean tree)
-- `npm run deploy:preview` — deploy current branch to Cloudflare preview and wait for success
+- `npm run deploy:prod` — optional direct trigger path for production deploy + marker verification
+- `npm run deploy:preview` — optional direct trigger path for preview deploy
 - `npm run verify:prod` — verify live production markers only
 
 Flags (fatigue reducers / escape hatches):
 
 - `--skip-deploy` — skip Cloudflare **Pages** deploy + verify stages only
 - `--skip-worker-deploy` — skip the optional **Worker** deploy stage even when `workers/form-analytics/` changed
+
+### Git-first deploy mode (recommended on blocked networks)
+
+If your network gets challenged by Cloudflare API/hook endpoints, use this repo default:
+
+- `deploy.enabled: false` in `pipeline.config.json`
+- Let Cloudflare Pages auto-build from merged `main` commits
+- Run `npm run verify:prod` after merge as your deterministic post-deploy check
 
 ### Environment variables (see `.env.pipeline.example`)
 
