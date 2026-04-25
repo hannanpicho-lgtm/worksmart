@@ -15,8 +15,8 @@
   },
   "deploy": {
     "enabled": true,
-    "mode": "manual",
-    "environments": ["preview"],
+    "mode": "auto",
+    "environments": ["auto"],
     "productionUrl": "https://worksmart-188.pages.dev/",
     "verifyContains": ["worksmart0226@gmail.com", "favicon.svg"],
     "pollIntervalMs": 8000,
