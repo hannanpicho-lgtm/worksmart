@@ -108,6 +108,7 @@ Flags (fatigue reducers / escape hatches):
 
 - `auto` — recommended default: if deploy hook env var exists, use `hook`; otherwise use `api`
 - If `api` fails with a Git-connected manifest error and a deploy hook exists, pipeline falls back to `hook` automatically
+- If hook triggering is blocked (for example 403 challenge), pipeline/deploy command falls back to `api` automatically in `auto` mode
 - `hook` — uses `CLOUDFLARE_DEPLOY_HOOK_URL_*`
 - `api` — uses the Pages deployment API (may fail on some Git-connected projects; hooks are the fallback)
 
