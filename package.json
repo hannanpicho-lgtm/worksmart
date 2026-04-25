@@ -12,6 +12,8 @@
     "pipeline:full": "node scripts/pipeline.mjs --auto-merge",
     "pipeline:dry": "node scripts/pipeline.mjs --dry-run",
     "pipeline:release": "node scripts/pipeline.mjs --release --auto-merge",
+    "deploy:prod": "node scripts/deploy-pages.mjs --env production",
+    "deploy:preview": "node scripts/deploy-pages.mjs --env preview",
     "verify:prod": "node scripts/verify-prod.mjs",
     "worker:form-analytics:deploy": "npx wrangler deploy --config workers/form-analytics/wrangler.toml",
     "ship": "node scripts/ship.mjs",
