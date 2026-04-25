@@ -153,6 +153,15 @@ function resolveDeployMode(configuredMode, hookUrl) {
   return hookUrl ? "hook" : "api";
 }
 
+function requireFullyAutomatedDeployMode(mode) {
+  if (mode === "manual") {
+    throw new Error(
+      'deploy.mode is set to "manual", which disables automatic deployment.\n' +
+        'Set deploy.mode to "auto", "hook", or "api" in pipeline.config.json for fully automated runs.',
+    );
+  }
+}
+
 async function main() {
   setState(STATE.PENDING);
   printHeader("Pipeline Start");
@@ -383,18 +392,6 @@ async function main() {
             "Production deploy requested before merge. Use preview environment for feature branches, or run release mode after merge.",
           );
         }
-        if (deployMode === "manual") {
-          process.stdout.write(
-            `✔ Stage: deploy skipped for ${environment} (manual mode). Trigger from Cloudflare UI.\n`,
-          );
-          runLog.deployments.push({
-            environment,
-            skipped: true,
-            reason: "manual-mode",
-          });
-          continue;
-        }
-
         const latest = await getLatestDeployment({
           token,
           accountId,
@@ -429,6 +426,7 @@ async function main() {
             : "CLOUDFLARE_DEPLOY_HOOK_URL_PREVIEW";
         const hookUrl = process.env[hookEnvVar];
         const deployMode = resolveDeployMode(config.deploy.mode, hookUrl);
+        requireFullyAutomatedDeployMode(deployMode);
 
         if (deployMode === "hook") {
           if (!hookUrl) {
@@ -464,7 +462,7 @@ async function main() {
           }
         } else {
           throw new Error(
-            `Unknown deploy mode "${deployMode}". Valid: manual | hook | api | auto`,
+            `Unknown deploy mode "${deployMode}". Valid: hook | api | auto`,
           );
         }
         process.stdout.write(`✔ Stage: deploy triggered (${environment})\n`);

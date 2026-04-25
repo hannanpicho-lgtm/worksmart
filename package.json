@@ -8,6 +8,7 @@
     "format:check": "prettier --check \"**/*.{md,html,css,yml,yaml,json}\"",
     "content:check": "node scripts/check-content.mjs",
     "pipeline": "node scripts/pipeline.mjs",
+    "pipeline:full": "node scripts/pipeline.mjs --auto-merge",
     "pipeline:dry": "node scripts/pipeline.mjs --dry-run",
     "pipeline:release": "node scripts/pipeline.mjs --release --auto-merge",
     "verify:prod": "node scripts/verify-prod.mjs",
