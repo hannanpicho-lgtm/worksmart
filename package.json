@@ -11,6 +11,7 @@
     "pipeline:dry": "node scripts/pipeline.mjs --dry-run",
     "pipeline:release": "node scripts/pipeline.mjs --release --auto-merge",
     "verify:prod": "node scripts/verify-prod.mjs",
+    "worker:form-analytics:deploy": "npx wrangler deploy --config workers/form-analytics/wrangler.toml",
     "ship": "node scripts/ship.mjs",
     "ship:quick": "node scripts/ship.mjs --quick",
     "ship:open": "node scripts/ship.mjs --open"

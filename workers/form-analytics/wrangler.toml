@@ -1,0 +1,18 @@
+# Standalone ingest Worker (not the Pages site).
+# Deploy from repo root: npm run worker:form-analytics:deploy
+#
+# Optional: persist per-day counters in Workers KV
+# 1) npx wrangler kv namespace create FORM_METRICS
+# 2) Uncomment [[kv_namespaces]] and paste the namespace id
+# 3) Optional: npx wrangler secret put ANALYTICS_INGEST_SECRET
+#    (browser sendBeacon cannot send Authorization; leave unset for public Pages → Worker ingest
+#     and rely on ALLOWED_ORIGINS, or protect the Worker with Cloudflare Access instead.)
+# 4) Set ALLOWED_ORIGINS in the dashboard (Settings → Variables) or add [vars] below (comma-separated).
+
+name = "worksmart-form-analytics"
+main = "src/index.js"
+compatibility_date = "2024-12-01"
+
+# [[kv_namespaces]]
+# binding = "METRICS"
+# id = "paste_kv_namespace_id_here"

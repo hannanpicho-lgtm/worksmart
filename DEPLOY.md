@@ -78,6 +78,28 @@ Everything in **`public/`** is the website root:
 - **Easiest:** Cloudflare dashboard → **Analytics** → **Web Analytics** → add your site / domain and follow the wizard (often no code change on Pages).
 - **Token-based:** uncomment the beacon script in `public/index.html` and paste the token from Cloudflare.
 
+### 4b. Contact form telemetry ingest (optional Worker)
+
+The site can POST anonymized form funnel events to a **separate** Cloudflare Worker (`workers/form-analytics/`). This is **not** your Pages project.
+
+**Preferred (same automation spine as the site):** when you change files under `workers/form-analytics/`, `npm run pipeline` deploys that Worker after push (uses `CLOUDFLARE_API_TOKEN`; one-time `npx wrangler login` on the machine). Disable with `workers.formAnalytics.enabled: false` in `pipeline.config.json` or run the pipeline with `--skip-worker-deploy`.
+
+**Standalone** (if you only need to redeploy the Worker):
+
+```bash
+npm run worker:form-analytics:deploy
+```
+
+Wire the site in `public/index.html` on the contact form:
+
+- `data-analytics-endpoint="https://<worker-subdomain>.workers.dev"` (the script appends `/ingest` when the path is `/`)
+
+After deploy, open the printed `*.workers.dev` URL with `/health` (for example `https://worksmart-form-analytics.<account>.workers.dev/health`) and confirm `{"ok":true,...}`.
+
+**Lock down browser traffic (recommended):** in the Worker → **Settings** → **Variables**, add `ALLOWED_ORIGINS` with a comma-separated list of exact origins that may call the ingest API (for example `https://worksmart-188.pages.dev,https://www.yourdomain.com`). If this variable is missing, the Worker allows any origin (`*`) for the ingest route (fine for local testing, weak for production).
+
+**Optional KV counters:** create a KV namespace, bind it as `METRICS` in `workers/form-analytics/wrangler.toml` (see comments in that file), redeploy, then use `GET /metrics?token=<ANALYTICS_INGEST_SECRET>` only if you also set the `ANALYTICS_INGEST_SECRET` secret on the Worker. **Note:** the static site cannot safely send a Bearer token from `sendBeacon`; if you set `ANALYTICS_INGEST_SECRET`, browser beacons will fail ingest auth—prefer `ALLOWED_ORIGINS` (and optionally Cloudflare Access) for browser-sourced telemetry.
+
 ---
 
 ## 5. Content
