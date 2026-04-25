@@ -140,6 +140,19 @@ function buildPrBody(branchName, files) {
   ].join("\n");
 }
 
+function resolveDeployEnvironments(configured, { releaseMode, autoMergeEnabled }) {
+  const requested = configured ?? ["auto"];
+  if (!Array.isArray(requested) || requested.length === 0) return ["preview"];
+  if (!requested.includes("auto")) return requested;
+  return releaseMode || autoMergeEnabled ? ["production"] : ["preview"];
+}
+
+function resolveDeployMode(configuredMode, hookUrl) {
+  const mode = configuredMode ?? "manual";
+  if (mode !== "auto") return mode;
+  return hookUrl ? "hook" : "api";
+}
+
 async function main() {
   setState(STATE.PENDING);
   printHeader("Pipeline Start");
@@ -350,10 +363,12 @@ async function main() {
     const token = requireEnv("CLOUDFLARE_API_TOKEN");
     const accountId = requireEnv("CLOUDFLARE_ACCOUNT_ID");
     const projectName = requireEnv("CLOUDFLARE_PROJECT_NAME");
-      const deployMode = config.deploy.mode ?? "manual";
       const targetSha = dryRun ? headSha("HEAD") : headSha("HEAD");
-
-      const environments = config.deploy.environments ?? ["production"];
+      const autoMergeEnabled = autoMerge || config.github.autoMerge;
+      const environments = resolveDeployEnvironments(config.deploy.environments, {
+        releaseMode,
+        autoMergeEnabled,
+      });
       runLog.deployments = [];
 
       for (const environment of environments) {
@@ -413,6 +428,7 @@ async function main() {
             ? "CLOUDFLARE_DEPLOY_HOOK_URL_PRODUCTION"
             : "CLOUDFLARE_DEPLOY_HOOK_URL_PREVIEW";
         const hookUrl = process.env[hookEnvVar];
+        const deployMode = resolveDeployMode(config.deploy.mode, hookUrl);
 
         if (deployMode === "hook") {
           if (!hookUrl) {
@@ -431,18 +447,24 @@ async function main() {
               branch: deployBranch,
             });
           } catch (error) {
-            if (String(error.message).includes("manifest")) {
+            if (String(error.message).includes("manifest") && hookUrl) {
+              process.stdout.write(
+                `API trigger rejected for ${environment}; falling back to deploy hook.\n`,
+              );
+              await triggerDeployHook({ hookUrl });
+            } else if (String(error.message).includes("manifest")) {
               throw new Error(
                 `Cloudflare API rejected deployment trigger for Git-connected Pages project.\n` +
                   `Create a Pages deploy hook and set ${hookEnvVar}.\n` +
                   "Cloudflare dashboard -> Workers & Pages -> your project -> Settings -> Build & deployments -> Deploy hooks.",
               );
+            } else {
+              throw error;
             }
-            throw error;
           }
         } else {
           throw new Error(
-            `Unknown deploy mode "${deployMode}". Valid: manual | hook | api`,
+            `Unknown deploy mode "${deployMode}". Valid: manual | hook | api | auto`,
           );
         }
         process.stdout.write(`✔ Stage: deploy triggered (${environment})\n`);

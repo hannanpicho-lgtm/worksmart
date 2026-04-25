@@ -50,10 +50,10 @@ GitHub’s hosted CI/CD is effectively **two cooperating layers**:
 
 This repo’s **`npm run pipeline`** is designed to reproduce that **same two-layer contract without GitHub Actions billing** for the automation path:
 
-| Layer | What runs here                                                                                                          | What you should type per iteration (when configured)               |
-| ----- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| **1** | Deterministic quality gates on your machine (`format:check`, `content:check`, optional npm scripts if present)          | **`npm run pipeline`** (one command drives the rest)               |
-| **2** | GitHub API (create/update PR; optional merge) + Cloudflare (deploy trigger when not `manual`) + production verification | Same command; merge in GitHub only if you are not using auto-merge |
+| Layer | What runs here                                                                                                 | What you should type per iteration (when configured)               |
+| ----- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| **1** | Deterministic quality gates on your machine (`format:check`, `content:check`, optional npm scripts if present) | **`npm run pipeline`** (one command drives the rest)               |
+| **2** | GitHub API (create/update PR; optional merge) + Cloudflare (deploy trigger) + production verification          | Same command; merge in GitHub only if you are not using auto-merge |
 
 **Design goal:** reduce repeated human ceremony. **One-time** setup is unavoidable (tokens, Pages hooks, `wrangler login` once per machine). **Per change**, the pipeline is the spine: either it finishes green, or it stops with a **single** actionable error.
 
@@ -66,7 +66,7 @@ This repo’s **`npm run pipeline`** is designed to reproduce that **same two-la
 - Commits and pushes
 - **If `workers/form-analytics/` changed:** deploys the form-ingest Worker via Wrangler (skips automatically when that folder is untouched)
 - Creates/updates a PR via GitHub API
-- Optionally triggers Cloudflare Pages deploy (`hook` / `api`) and waits
+- Triggers Cloudflare Pages deploy and waits (mode can auto-resolve)
 - Optionally verifies live production markers
 - Writes a machine-readable run log under `logs/`
 
@@ -103,9 +103,19 @@ Flags (fatigue reducers / escape hatches):
 
 ### Deploy mode (`pipeline.config.json` → `deploy.mode`)
 
+- `auto` — recommended default: if deploy hook env var exists, use `hook`; otherwise use `api`
+- If `api` fails with a Git-connected manifest error and a deploy hook exists, pipeline falls back to `hook` automatically
+
 - `manual` — no Pages deploy trigger from the pipeline (dashboard or other process)
 - `hook` — uses `CLOUDFLARE_DEPLOY_HOOK_URL_*`
 - `api` — uses the Pages deployment API (may fail on some Git-connected projects; hooks are the fallback)
+
+### Deploy environment selection (`pipeline.config.json` → `deploy.environments`)
+
+- `["auto"]` — recommended default:
+  - non-release runs -> `preview`
+  - release/auto-merge runs -> `production`
+- You can still set explicit values like `["preview"]` or `["production"]` if needed
 
 ### Worker auto-deploy (`pipeline.config.json` → `workers.formAnalytics`)
 
