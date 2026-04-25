@@ -27,6 +27,7 @@ const args = new Set(process.argv.slice(2));
 const dryRun = args.has("--dry-run");
 const releaseMode = args.has("--release");
 const skipDeploy = args.has("--skip-deploy");
+const skipWorkerDeploy = args.has("--skip-worker-deploy");
 const autoMerge = args.has("--auto-merge");
 const allowProtected = args.has("--allow-protected");
 
@@ -37,6 +38,7 @@ const runLog = {
   dryRun,
   releaseMode,
   skipDeploy,
+  skipWorkerDeploy,
   autoMerge,
   allowProtected,
   stateTransitions: [],
@@ -252,6 +254,41 @@ async function main() {
       }
       git("push", "-u", "origin", branch);
       process.stdout.write("✔ Stage: push successful\n");
+    },
+  );
+
+  await stage(
+    "worker-deploy",
+    "Run `npx wrangler login` once on this machine, ensure `CLOUDFLARE_API_TOKEN` is set, or pass `--skip-worker-deploy`.",
+    async () => {
+      if (dryRun || skipWorkerDeploy) {
+        process.stdout.write(
+          skipWorkerDeploy
+            ? "Worker deploy skipped (--skip-worker-deploy).\n"
+            : "[dry-run] skipping Worker deploy\n",
+        );
+        return;
+      }
+      const wf = config.workers?.formAnalytics;
+      if (!wf || wf.enabled === false) {
+        process.stdout.write(
+          "Worker auto-deploy disabled (set workers.formAnalytics.enabled true in pipeline.config.json).\n",
+        );
+        return;
+      }
+      const prefix = wf.pathPrefix || "workers/form-analytics/";
+      const touched = files.some((f) => f.startsWith(prefix));
+      if (!touched) {
+        process.stdout.write(
+          "Worker deploy skipped (no changes under form analytics paths).\n",
+        );
+        return;
+      }
+      const cfgRel = wf.wranglerConfig || "workers/form-analytics/wrangler.toml";
+      printHeader("Cloudflare Worker deploy (form analytics)");
+      requireEnv("CLOUDFLARE_API_TOKEN");
+      runShell(`npx wrangler deploy --config "${cfgRel}"`, { stdio: "inherit" });
+      process.stdout.write("✔ Stage: worker-deploy passed\n");
     },
   );
 

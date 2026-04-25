@@ -38,49 +38,79 @@ Useful flags:
 
 ## Deterministic local pipeline (GitHub Actions replacement)
 
-Use `npm run pipeline` for a strict fail-fast local CI/CD run:
+### Why this exists (the “two layers” you wanted)
+
+GitHub’s hosted CI/CD is effectively **two cooperating layers**:
+
+1. **Layer 1 — checks before the change is “real” on the remote**  
+   Lint/format/tests/build run in a controlled environment so broken work does not land as the default story of the repo.
+
+2. **Layer 2 — automation after the change is pushed**  
+   Open/update a PR, optionally merge, trigger deployment, and **verify the live system** so “green” means something customer-visible.
+
+This repo’s **`npm run pipeline`** is designed to reproduce that **same two-layer contract without GitHub Actions billing** for the automation path:
+
+| Layer | What runs here                                                                                                          | What you should type per iteration (when configured)               |
+| ----- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| **1** | Deterministic quality gates on your machine (`format:check`, `content:check`, optional npm scripts if present)          | **`npm run pipeline`** (one command drives the rest)               |
+| **2** | GitHub API (create/update PR; optional merge) + Cloudflare (deploy trigger when not `manual`) + production verification | Same command; merge in GitHub only if you are not using auto-merge |
+
+**Design goal:** reduce repeated human ceremony. **One-time** setup is unavoidable (tokens, Pages hooks, `wrangler login` once per machine). **Per change**, the pipeline is the spine: either it finishes green, or it stops with a **single** actionable error.
+
+**What belongs in the pipeline:** anything you were doing “every PR” manually (checks, commit discipline, push, PR link, deploy trigger, smoke verification). **Optional Worker** deploy for `workers/form-analytics/` is included the same way: if that path is in the change set, the pipeline runs `wrangler deploy` after push (same Cloudflare token), so you are not maintaining a second ritual for routine edits.
+
+### What the pipeline does (stages)
 
 - Validates branch safety rules and changed files
-- Executes quality gates (`format:check`, `content:check`)
-- Commits and pushes deterministically
-- Creates/updates PR via GitHub API
-- Triggers and polls Cloudflare production deployment
-- Verifies live production markers before success
+- Runs quality gates (`format:check`, `content:check`, plus optional scripts from `pipeline.config.json`)
+- Commits and pushes
+- **If `workers/form-analytics/` changed:** deploys the form-ingest Worker via Wrangler (skips automatically when that folder is untouched)
+- Creates/updates a PR via GitHub API
+- Optionally triggers Cloudflare Pages deploy (`hook` / `api`) and waits
+- Optionally verifies live production markers
 - Writes a machine-readable run log under `logs/`
-- Tracks explicit states:
-  `PENDING -> VALIDATING -> PRECHECK -> COMMITTING -> PUSHING -> PR_CREATING -> DEPLOYING -> VERIFYING -> SUCCESS/FAILED`
 
-Commands:
+State flow (conceptual):
 
-- `npm run pipeline` - normal pipeline
-- `npm run pipeline:dry` - dry run (no commit/push/deploy)
-- `npm run pipeline:release` - release mode (`--release --auto-merge`)
-- `npm run verify:prod` - verify live production markers only
+`PENDING → VALIDATING → PRECHECK → COMMITTING → PUSHING → (worker-deploy when needed) → PR_CREATING → DEPLOYING → VERIFYING → SUCCESS/FAILED`
 
-Required environment variables (see `.env.pipeline.example`):
+### Commands
 
-- `GITHUB_TOKEN`
-- `CLOUDFLARE_API_TOKEN`
-- `CLOUDFLARE_ACCOUNT_ID`
-- `CLOUDFLARE_PROJECT_NAME`
-- `CLOUDFLARE_DEPLOY_HOOK_URL_PREVIEW` (recommended for feature-branch preview deploys)
-- `CLOUDFLARE_DEPLOY_HOOK_URL_PRODUCTION` (recommended for release/merged production deploys)
+- `npm run pipeline` — normal pipeline
+- `npm run pipeline:dry` — dry run (no commit/push/deploy/Worker deploy)
+- `npm run pipeline:release` — release mode (`--release --auto-merge`)
+- `npm run verify:prod` — verify live production markers only
 
-Safety/fallback behaviors:
+Flags (fatigue reducers / escape hatches):
+
+- `--skip-deploy` — skip Cloudflare **Pages** deploy + verify stages only
+- `--skip-worker-deploy` — skip the optional **Worker** deploy stage even when `workers/form-analytics/` changed
+
+### Environment variables (see `.env.pipeline.example`)
+
+- `GITHUB_TOKEN` — PR create/update (and merge when enabled)
+- `CLOUDFLARE_API_TOKEN` — Pages API or hooks; also used when the pipeline deploys the form analytics Worker
+- `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_PROJECT_NAME` — Pages deploy stages
+- `CLOUDFLARE_DEPLOY_HOOK_URL_PREVIEW` / `CLOUDFLARE_DEPLOY_HOOK_URL_PRODUCTION` — when `deploy.mode` is `hook`
+
+### Safety / fail-fast
 
 - Non-release runs are blocked on `main`/`master`
-- Any stage failure hard-stops the pipeline
-- If API tokens are missing, pipeline fails with explicit setup guidance
-- If Cloudflare API deploy trigger requires a manifest (Git-connected Pages), pipeline instructs deploy-hook setup
-- Deploy verification fails if expected production markers are absent
+- Any stage failure hard-stops the pipeline with a fix hint
+- Missing tokens fail early with setup guidance
+- If Pages API deploy is incompatible with your project (manifest/Git-connected), the error points you at deploy hooks
+- Verification fails if production markers are missing
 
-### Deploy mode normalization
+### Deploy mode (`pipeline.config.json` → `deploy.mode`)
 
-Set `deploy.mode` in `pipeline.config.json`:
+- `manual` — no Pages deploy trigger from the pipeline (dashboard or other process)
+- `hook` — uses `CLOUDFLARE_DEPLOY_HOOK_URL_*`
+- `api` — uses the Pages deployment API (may fail on some Git-connected projects; hooks are the fallback)
 
-- `manual` - pipeline never triggers deploy; it logs manual action required
-- `hook` - pipeline triggers Cloudflare deploy hooks (`CLOUDFLARE_DEPLOY_HOOK_URL_*`)
-- `api` - pipeline triggers Cloudflare Pages deployment API directly
+### Worker auto-deploy (`pipeline.config.json` → `workers.formAnalytics`)
+
+- Set `enabled` to `false` if you deploy that Worker elsewhere
+- When `enabled` is `true` and changed files match `pathPrefix`, the pipeline runs `npx wrangler deploy` after push
 
 ## Production content audit
 

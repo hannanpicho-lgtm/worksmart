@@ -23,6 +23,13 @@
     "timeoutMs": 300000,
     "skipDuplicateCommitDeploy": true
   },
+  "workers": {
+    "formAnalytics": {
+      "enabled": true,
+      "pathPrefix": "workers/form-analytics/",
+      "wranglerConfig": "workers/form-analytics/wrangler.toml"
+    }
+  },
   "github": {
     "autoCreatePr": true,
     "autoMerge": false,

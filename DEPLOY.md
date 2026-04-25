@@ -80,15 +80,19 @@ Everything in **`public/`** is the website root:
 
 ### 4b. Contact form telemetry ingest (optional Worker)
 
-The site can POST anonymized form funnel events to a **separate** Cloudflare Worker (`workers/form-analytics/`). This is **not** your Pages project; deploy it once and paste its URL into `public/index.html` on the contact form:
+The site can POST anonymized form funnel events to a **separate** Cloudflare Worker (`workers/form-analytics/`). This is **not** your Pages project.
 
-- `data-analytics-endpoint="https://<worker-subdomain>.workers.dev"` (the script appends `/ingest` when the path is `/`)
+**Preferred (same automation spine as the site):** when you change files under `workers/form-analytics/`, `npm run pipeline` deploys that Worker after push (uses `CLOUDFLARE_API_TOKEN`; one-time `npx wrangler login` on the machine). Disable with `workers.formAnalytics.enabled: false` in `pipeline.config.json` or run the pipeline with `--skip-worker-deploy`.
 
-Deploy from the repo root (requires a Cloudflare login on this machine):
+**Standalone** (if you only need to redeploy the Worker):
 
 ```bash
 npm run worker:form-analytics:deploy
 ```
+
+Wire the site in `public/index.html` on the contact form:
+
+- `data-analytics-endpoint="https://<worker-subdomain>.workers.dev"` (the script appends `/ingest` when the path is `/`)
 
 After deploy, open the printed `*.workers.dev` URL with `/health` (for example `https://worksmart-form-analytics.<account>.workers.dev/health`) and confirm `{"ok":true,...}`.
 
