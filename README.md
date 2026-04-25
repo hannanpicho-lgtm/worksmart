@@ -76,7 +76,7 @@ State flow (conceptual):
 
 ### Commands
 
-- `npm run pipeline` — normal pipeline
+- `npm run pipeline` — default fully automated pipeline (auto-merge enabled in config)
 - `npm run pipeline:full` — fully automated path (includes `--auto-merge`)
 - `npm run pipeline:dry` — dry run (no commit/push/deploy/Worker deploy)
 - `npm run pipeline:release` — release mode (`--release --auto-merge`)
