@@ -102,10 +102,29 @@ function setStatus(message, type = "") {
   if (type) statusEl.classList.add(type);
 }
 
+function resolveIngestUrl(raw) {
+  try {
+    const url = new URL(raw);
+    const path = url.pathname.replace(/\/+$/, "") || "/";
+    if (path === "/ingest" || path.endsWith("/ingest")) {
+      return url.toString();
+    }
+    if (path === "/") {
+      url.pathname = "/ingest";
+      return url.toString();
+    }
+    return url.toString();
+  } catch {
+    return "";
+  }
+}
+
 function sendAnalyticsEvent(payload) {
   if (!contactForm) return;
   const analyticsEndpoint = normalizeField(contactForm.dataset.analyticsEndpoint);
   if (!analyticsEndpoint) return;
+  const ingestUrl = resolveIngestUrl(analyticsEndpoint);
+  if (!ingestUrl) return;
 
   const body = JSON.stringify({
     event_name: payload.event_name,
@@ -118,14 +137,14 @@ function sendAnalyticsEvent(payload) {
   try {
     if (navigator.sendBeacon) {
       const blob = new Blob([body], { type: "application/json" });
-      navigator.sendBeacon(analyticsEndpoint, blob);
+      navigator.sendBeacon(ingestUrl, blob);
       return;
     }
   } catch {
     // Fall back to fetch below.
   }
 
-  fetch(analyticsEndpoint, {
+  fetch(ingestUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body,
