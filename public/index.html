@@ -56,6 +56,13 @@
     </script>
     <link rel="icon" href="/worksmart-logo.png" type="image/png" />
     <link rel="apple-touch-icon" href="/worksmart-logo.png" />
+    <link
+      rel="preload"
+      href="/worksmart-logo.png"
+      as="image"
+      type="image/png"
+      fetchpriority="high"
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -89,6 +96,7 @@
             height="72"
             alt=""
             decoding="async"
+            fetchpriority="high"
           />
         </a>
         <a class="nav-link" href="#contact">Contact</a>
