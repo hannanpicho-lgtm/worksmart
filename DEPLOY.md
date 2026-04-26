@@ -89,9 +89,11 @@ You can also open **Actions** → **Deploy Cloudflare Pages** → **Run workflow
 
 The site can POST anonymized form funnel events to a **separate** Cloudflare Worker (`workers/form-analytics/`). This is **not** your Pages project.
 
-**Preferred (same automation spine as the site):** when you change files under `workers/form-analytics/`, `npm run pipeline` deploys that Worker after push (uses `CLOUDFLARE_API_TOKEN`; one-time `npx wrangler login` on the machine). Disable with `workers.formAnalytics.enabled: false` in `pipeline.config.json` or run the pipeline with `--skip-worker-deploy`.
+**On GitHub (recommended with merge-to-`main`):** the workflow **Deploy form-analytics Worker** runs automatically when commits under `workers/form-analytics/` land on `main` (same `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets as Pages). You can also run it from **Actions** → **Run workflow**.
 
-**Standalone** (if you only need to redeploy the Worker):
+**From your machine:** when you change `workers/form-analytics/`, `npm run pipeline` can deploy that Worker after push (uses `CLOUDFLARE_API_TOKEN`; one-time `npx wrangler login`). Disable with `workers.formAnalytics.enabled: false` in `pipeline.config.json` or run the pipeline with `--skip-worker-deploy`.
+
+**Standalone** (redeploy without a Worker code change):
 
 ```bash
 npm run worker:form-analytics:deploy
