@@ -114,6 +114,8 @@ After deploy, open the printed `*.workers.dev` URL with `/health` (for example `
 
 **Optional KV counters:** create a KV namespace, bind it as `METRICS` in `workers/form-analytics/wrangler.toml` (see comments in that file), redeploy, then use `GET /metrics?token=<ANALYTICS_INGEST_SECRET>` (today only) or `GET /metrics-summary?token=<ANALYTICS_INGEST_SECRET>&days=7` (rollup + success/blocked rates) only if you also set the `ANALYTICS_INGEST_SECRET` secret on the Worker. **Note:** the static site cannot safely send a Bearer token from `sendBeacon`; if you set `ANALYTICS_INGEST_SECRET`, browser beacons will fail ingest auth—prefer `ALLOWED_ORIGINS` (and optionally Cloudflare Access) for browser-sourced telemetry.
 
+For operator reads in terminal, run `npm run metrics:summary -- --days=7` (uses `FORM_ANALYTICS_WORKER_URL` and `ANALYTICS_INGEST_SECRET` from env; add `--json` for raw response).
+
 ---
 
 ## 5. Content
