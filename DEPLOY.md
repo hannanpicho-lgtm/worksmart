@@ -99,9 +99,10 @@ The site can POST anonymized form funnel events to a **separate** Cloudflare Wor
 npm run worker:form-analytics:deploy
 ```
 
-Wire the site in `public/index.html` on the contact form:
+Wire the site on the contact form (`data-analytics-endpoint`):
 
-- `data-analytics-endpoint="https://<worker-subdomain>.workers.dev"` (the script appends `/ingest` when the path is `/`)
+- **GitHub Actions (recommended):** repo → **Settings** → **Secrets and variables** → **Actions** → **Variables** → add **`FORM_ANALYTICS_WORKER_URL`** with your Worker’s **HTTPS origin** (no `/ingest` suffix), e.g. `https://worksmart-form-analytics.<account>.workers.dev`. The **Deploy Cloudflare Pages** workflow runs `scripts/inject-analytics-endpoint.mjs` before upload so production HTML gets the URL without committing it. Leave the variable unset to keep telemetry off in deployed builds.
+- **Or edit `public/index.html` locally:** `data-analytics-endpoint="https://<worker-subdomain>.workers.dev"` (the client appends `/ingest` when the path is `/`).
 
 After deploy, open the printed `*.workers.dev` URL with `/health` (for example `https://worksmart-form-analytics.<account>.workers.dev/health`) and confirm `{"ok":true,...}`.
 
