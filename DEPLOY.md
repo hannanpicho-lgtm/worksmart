@@ -78,6 +78,8 @@ The workflow **Deploy Cloudflare Pages** runs automatically on **every push to `
 
 You can also open **Actions** → **Deploy Cloudflare Pages** → **Run workflow** to redeploy the current `main` without a new commit.
 
+After publish, that workflow runs **`scripts/verify-prod.mjs`**: it loads **`deploy.productionUrl`** from `pipeline.config.json`, retries the fetch (see **`deploy.verifyFetchAttempts`** / **`deploy.verifyRetryDelayMs`**), and checks **`deploy.verifyContains`**. To also verify the form-analytics Worker, set **`workers.formAnalytics.verifyHealthUrl`** to your Worker’s `/health` URL (e.g. `https://worksmart-form-analytics.<account>.workers.dev/health`); leave the key unset to skip.
+
 ---
 
 ## 4. Web Analytics

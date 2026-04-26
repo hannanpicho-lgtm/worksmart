@@ -37,3 +37,6 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: worksmart
           directory: public
+
+      - name: Verify production (Pages + optional Worker)
+        run: node scripts/verify-prod.mjs

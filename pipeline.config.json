@@ -19,6 +19,8 @@
     "environments": ["auto"],
     "productionUrl": "https://worksmart-188.pages.dev/",
     "verifyContains": ["worksmart0226@gmail.com", "favicon.svg"],
+    "verifyFetchAttempts": 3,
+    "verifyRetryDelayMs": 5000,
     "pollIntervalMs": 8000,
     "timeoutMs": 300000,
     "skipDuplicateCommitDeploy": true

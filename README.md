@@ -83,7 +83,7 @@ State flow (conceptual):
 - `npm run pipeline:release` — release mode (`--release --auto-merge`)
 - `npm run deploy:prod` — optional direct trigger path for production deploy + marker verification
 - `npm run deploy:preview` — optional direct trigger path for preview deploy
-- `npm run verify:prod` — verify live production markers only
+- `npm run verify:prod` — verify live production markers (and optional Worker `/health` if set in `pipeline.config.json`); **Deploy Cloudflare Pages** runs this after publish
 
 Flags (fatigue reducers / escape hatches):
 
