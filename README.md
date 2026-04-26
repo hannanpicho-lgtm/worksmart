@@ -48,7 +48,7 @@ GitHub’s hosted CI/CD is effectively **two cooperating layers**:
 2. **Layer 2 — automation after the change is pushed**  
    Open/update a PR, optionally merge, trigger deployment, and **verify the live system** so “green” means something customer-visible.
 
-This repo’s **`npm run pipeline`** is designed to reproduce that **same two-layer contract without GitHub Actions billing** for the automation path:
+This repo’s **`npm run pipeline`** is designed to reproduce that **same two-layer contract** end to end (local gates, then merge and production deploy/verify—see **DEPLOY.md** for Cloudflare Git vs GitHub Actions):
 
 | Layer | What runs here                                                                                                 | What you should type per iteration (when configured)               |
 | ----- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
@@ -66,7 +66,7 @@ This repo’s **`npm run pipeline`** is designed to reproduce that **same two-la
 - Commits and pushes
 - **If `workers/form-analytics/` changed:** deploys the form-ingest Worker via Wrangler (skips automatically when that folder is untouched)
 - Creates/updates a PR via GitHub API
-- Uses GitHub merge + Cloudflare Git auto-deploy as default (no local deploy API calls)
+- After merge to **`main`**, production deploy is expected from **Cloudflare Git** (if connected) and/or the **Deploy Cloudflare Pages** workflow (runs on every push to `main` when secrets are set)
 - Keeps production verification available via `npm run verify:prod`
 - Writes a machine-readable run log under `logs/`
 
