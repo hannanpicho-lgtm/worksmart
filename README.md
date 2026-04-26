@@ -84,6 +84,7 @@ State flow (conceptual):
 - `npm run deploy:prod` — optional direct trigger path for production deploy + marker verification
 - `npm run deploy:preview` — optional direct trigger path for preview deploy
 - `npm run verify:prod` — verify live production markers (and optional Worker `/health` if set in `pipeline.config.json`); **Deploy Cloudflare Pages** runs this after publish
+- `npm run optimize:og` — resize `public/og-image.png` to 1200×630 if needed and recompress (run after replacing OG art)
 
 Flags (fatigue reducers / escape hatches):
 

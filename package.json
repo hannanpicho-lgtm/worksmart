@@ -17,12 +17,14 @@
     "deploy:preview": "node scripts/deploy-pages.mjs --env preview",
     "verify:prod": "node scripts/verify-prod.mjs",
     "inject:analytics-endpoint": "node scripts/inject-analytics-endpoint.mjs",
+    "optimize:og": "node scripts/optimize-og-image.mjs",
     "worker:form-analytics:deploy": "npx wrangler deploy --config workers/form-analytics/wrangler.toml",
     "ship": "node scripts/ship.mjs",
     "ship:quick": "node scripts/ship.mjs --quick",
     "ship:open": "node scripts/ship.mjs --open"
   },
   "devDependencies": {
-    "prettier": "^3.8.3"
+    "prettier": "^3.8.3",
+    "sharp": "^0.33.5"
   }
 }

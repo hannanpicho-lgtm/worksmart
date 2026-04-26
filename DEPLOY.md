@@ -119,7 +119,7 @@ After deploy, open the printed `*.workers.dev` URL with `/health` (for example `
 ## 5. Content
 
 - Edit **email, office, hours** in `public/index.html` (see comment above the contact grid).
-- **`og:image`** in `index.html` should point at **`og-image.png`** (1200×630) for broad social network support; replace `public/og-image.png` when you refresh branding.
+- **`og:image`** in `index.html` should point at **`og-image.png`** (1200×630) for broad social network support; replace `public/og-image.png` when you refresh branding, then run **`npm run optimize:og`** to resize (if needed) and compress the PNG.
 
 ---
 
