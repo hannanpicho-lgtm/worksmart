@@ -23,3 +23,9 @@ jobs:
 
       - name: Check formatting
         run: npm run format:check
+
+      - name: Check content
+        run: npm run content:check
+
+      - name: Test
+        run: npm test
