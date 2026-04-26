@@ -22,15 +22,16 @@ If **both** Git-connected Pages and this workflow are active on the same repo/br
 
 Everything in **`public/`** is the website root:
 
-| File           | Purpose                                |
-| -------------- | -------------------------------------- |
-| `index.html`   | Main page                              |
-| `styles.css`   | Styles                                 |
-| `favicon.svg`  | Browser tab icon                       |
-| `og-image.svg` | Open Graph / social preview (1200×630) |
-| `robots.txt`   | Crawler rules                          |
-| `sitemap.xml`  | Search engines (single URL for now)    |
-| `_headers`     | Security headers (Cloudflare Pages)    |
+| File           | Purpose                                                          |
+| -------------- | ---------------------------------------------------------------- |
+| `index.html`   | Main page                                                        |
+| `styles.css`   | Styles                                                           |
+| `favicon.svg`  | Browser tab icon                                                 |
+| `og-image.png` | Open Graph / social preview (1200×630; linked from `index.html`) |
+| `og-image.svg` | Optional alternate art (not used in meta if PNG is set)          |
+| `robots.txt`   | Crawler rules                                                    |
+| `sitemap.xml`  | Search engines (single URL for now)                              |
+| `_headers`     | Security headers (Cloudflare Pages)                              |
 
 **Cloudflare:** build output directory = **`public`**.
 
@@ -59,7 +60,7 @@ Everything in **`public/`** is the website root:
 1. Cloudflare → your **Pages** project → **Custom domains** → **Set up a domain**.
 2. Add `www` and/or apex; follow DNS prompts (easiest if DNS is already on Cloudflare).
 3. **Update site URLs** everywhere you still have the default Pages hostname:
-   - `public/index.html` — `canonical`, `og:url`, `og:image` (and add a real **1200×630** `og-image.png` later if you want rich previews on all networks).
+   - `public/index.html` — `canonical`, `og:url`, `og:image` (uses **`og-image.png`**; update when the domain changes).
    - `public/robots.txt` — `Sitemap:` line.
    - `public/sitemap.xml` — `<loc>`.
 
@@ -117,7 +118,7 @@ After deploy, open the printed `*.workers.dev` URL with `/health` (for example `
 ## 5. Content
 
 - Edit **email, office, hours** in `public/index.html` (see comment above the contact grid).
-- Add a proper **OG image** (`og-image.png`) and point `og:image` to it for best social previews.
+- **`og:image`** in `index.html` should point at **`og-image.png`** (1200×630) for broad social network support; replace `public/og-image.png` when you refresh branding.
 
 ---
 
@@ -129,6 +130,7 @@ If you zip instead of Git, the **zip root** must contain **all** `public/` asset
 index.html
 styles.css
 favicon.svg
+og-image.png
 og-image.svg
 robots.txt
 sitemap.xml

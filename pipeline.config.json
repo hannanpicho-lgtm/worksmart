@@ -18,7 +18,11 @@
     "mode": "auto",
     "environments": ["auto"],
     "productionUrl": "https://worksmart-188.pages.dev/",
-    "verifyContains": ["worksmart0226@gmail.com", "favicon.svg"],
+    "verifyContains": [
+      "worksmart0226@gmail.com",
+      "favicon.svg",
+      "og-image.png"
+    ],
     "verifyFetchAttempts": 3,
     "verifyRetryDelayMs": 5000,
     "pollIntervalMs": 8000,
