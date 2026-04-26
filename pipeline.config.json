@@ -29,7 +29,8 @@
     "formAnalytics": {
       "enabled": true,
       "pathPrefix": "workers/form-analytics/",
-      "wranglerConfig": "workers/form-analytics/wrangler.toml"
+      "wranglerConfig": "workers/form-analytics/wrangler.toml",
+      "verifyHealthUrl": "https://worksmart-form-analytics.hannanpicho.workers.dev/health"
     }
   },
   "github": {
