@@ -67,6 +67,7 @@ This repo’s **`npm run pipeline`** is designed to reproduce that **same two-la
 - **If `workers/form-analytics/` changed:** deploys the form-ingest Worker via Wrangler (skips automatically when that folder is untouched)
 - Creates/updates a PR via GitHub API
 - After merge to **`main`**, production deploy is expected from **Cloudflare Git** (if connected) and/or the **Deploy Cloudflare Pages** workflow (runs on every push to `main` when secrets are set)
+- **If `workers/form-analytics/` changed on `main`:** the **Deploy form-analytics Worker** GitHub Action runs `wrangler deploy` (same secrets; see **DEPLOY.md**)
 - Keeps production verification available via `npm run verify:prod`
 - Writes a machine-readable run log under `logs/`
 
