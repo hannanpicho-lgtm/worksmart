@@ -154,3 +154,41 @@ test("metrics endpoint requires secret and returns counters when authorized", as
   assert.equal(json.ok, true);
   assert.equal(json.metrics.submit_attempt, 3);
 });
+
+test("metrics-summary rolls up multiple days and computes rates", async () => {
+  function addUtcDay(dayIso, delta) {
+    const d = new Date(`${dayIso}T12:00:00.000Z`);
+    d.setUTCDate(d.getUTCDate() + delta);
+    return d.toISOString().slice(0, 10);
+  }
+
+  const kv = makeKv();
+  const endDay = new Date().toISOString().slice(0, 10);
+  const prevDay = addUtcDay(endDay, -1);
+  await kv.put(`form:${prevDay}:submit_attempt`, "4");
+  await kv.put(`form:${prevDay}:submit_success`, "3");
+  await kv.put(`form:${endDay}:submit_attempt`, "6");
+  await kv.put(`form:${endDay}:submit_blocked_turnstile_incomplete`, "2");
+  await kv.put(`form:${endDay}:submit_success`, "4");
+
+  const res = await call(
+    `https://worker.example/metrics-summary?token=secret-123&days=2`,
+    { method: "GET" },
+    {
+      ANALYTICS_INGEST_SECRET: "secret-123",
+      METRICS: kv,
+    },
+  );
+  assert.equal(res.status, 200);
+  const body = await res.json();
+  assert.equal(body.ok, true);
+  assert.equal(body.days, 2);
+  assert.equal(body.range.start, prevDay);
+  assert.equal(body.range.end, endDay);
+  assert.equal(body.rollup.submit_attempt, 10);
+  assert.equal(body.rollup.submit_success, 7);
+  assert.equal(body.rollup.submit_blocked_turnstile_incomplete, 2);
+  assert.equal(body.rates.submit_attempts, 10);
+  assert.ok(Math.abs(body.rates.success_rate - 0.7) < 1e-9);
+  assert.ok(Math.abs(body.rates.blocked_rate - 0.2) < 1e-9);
+});

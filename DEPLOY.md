@@ -9,7 +9,10 @@
 
 This site is **static files only**. It must live on **Pages**, not Workers.
 
-The GitHub Action in this repo deploys to **Pages** only (`cloudflare/pages-action`).
+**Deploy path (choose one):**
+
+- **Recommended (no GitHub Actions billing):** Cloudflare Pages **Connect to Git** — every push/merge to `main` builds from the repo. See §1.
+- **Optional:** Manual run of the workflow **Deploy Cloudflare Pages** in GitHub Actions (uses `cloudflare/pages-action`). It is **manual-only** so a locked/billed-out GitHub account does not block merges.
 
 ---
 
@@ -62,14 +65,14 @@ Everything in **`public/`** is the website root:
 
 ---
 
-## 3. GitHub Actions (optional CI)
+## 3. GitHub Actions (optional, manual only)
+
+The workflow **Deploy Cloudflare Pages** does **not** run on every push. Open **Actions** → **Deploy Cloudflare Pages** → **Run workflow** when you want an API-based deploy from GitHub.
 
 1. Cloudflare **Account ID** + **API token** (Pages: **Edit**).
 2. GitHub repo → **Settings** → **Secrets and variables** → **Actions**:
    - `CLOUDFLARE_API_TOKEN`
    - `CLOUDFLARE_ACCOUNT_ID`
-
-3. Pushes to **`main`** run `.github/workflows/cloudflare-pages.yml` and deploy **`public/`**.
 
 ---
 
@@ -98,7 +101,7 @@ After deploy, open the printed `*.workers.dev` URL with `/health` (for example `
 
 **Lock down browser traffic (recommended):** in the Worker → **Settings** → **Variables**, add `ALLOWED_ORIGINS` with a comma-separated list of exact origins that may call the ingest API (for example `https://worksmart-188.pages.dev,https://www.yourdomain.com`). If this variable is missing, the Worker allows any origin (`*`) for the ingest route (fine for local testing, weak for production).
 
-**Optional KV counters:** create a KV namespace, bind it as `METRICS` in `workers/form-analytics/wrangler.toml` (see comments in that file), redeploy, then use `GET /metrics?token=<ANALYTICS_INGEST_SECRET>` only if you also set the `ANALYTICS_INGEST_SECRET` secret on the Worker. **Note:** the static site cannot safely send a Bearer token from `sendBeacon`; if you set `ANALYTICS_INGEST_SECRET`, browser beacons will fail ingest auth—prefer `ALLOWED_ORIGINS` (and optionally Cloudflare Access) for browser-sourced telemetry.
+**Optional KV counters:** create a KV namespace, bind it as `METRICS` in `workers/form-analytics/wrangler.toml` (see comments in that file), redeploy, then use `GET /metrics?token=<ANALYTICS_INGEST_SECRET>` (today only) or `GET /metrics-summary?token=<ANALYTICS_INGEST_SECRET>&days=7` (rollup + success/blocked rates) only if you also set the `ANALYTICS_INGEST_SECRET` secret on the Worker. **Note:** the static site cannot safely send a Bearer token from `sendBeacon`; if you set `ANALYTICS_INGEST_SECRET`, browser beacons will fail ingest auth—prefer `ALLOWED_ORIGINS` (and optionally Cloudflare Access) for browser-sourced telemetry.
 
 ---
 
