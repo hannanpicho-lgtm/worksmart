@@ -97,6 +97,65 @@ function utcDayKey(ts) {
   return new Date(ts).toISOString().slice(0, 10);
 }
 
+function addUtcDays(dayIso, deltaDays) {
+  const d = new Date(`${dayIso}T12:00:00.000Z`);
+  d.setUTCDate(d.getUTCDate() + deltaDays);
+  return d.toISOString().slice(0, 10);
+}
+
+function clampInt(value, min, max, fallback) {
+  const n = Number.parseInt(String(value), 10);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.min(max, Math.max(min, n));
+}
+
+async function aggregateMetricsRange(env, startDay, endDay) {
+  if (!env.METRICS) {
+    return { by_day: [], rollup: {} };
+  }
+  const by_day = [];
+  const rollup = {};
+  let day = startDay;
+  while (day <= endDay) {
+    const prefix = `form:${day}:`;
+    const list = await env.METRICS.list({ prefix });
+    const metrics = {};
+    for (const key of list.keys) {
+      const eventName = key.name.slice(prefix.length);
+      const n = Number.parseInt((await env.METRICS.get(key.name)) || "0", 10) || 0;
+      metrics[eventName] = n;
+      rollup[eventName] = (rollup[eventName] || 0) + n;
+    }
+    by_day.push({ day, metrics });
+    day = addUtcDays(day, 1);
+  }
+  return { by_day, rollup };
+}
+
+function computeFunnelRates(rollup) {
+  const attempts = rollup.submit_attempt || 0;
+  const success = rollup.submit_success || 0;
+  const errors = rollup.submit_error || 0;
+  let blocked = 0;
+  for (const [key, value] of Object.entries(rollup)) {
+    if (key.startsWith("submit_blocked_")) blocked += value;
+  }
+  if (!attempts) {
+    return {
+      submit_attempts: 0,
+      success_rate: null,
+      error_rate: null,
+      blocked_rate: null,
+    };
+  }
+  return {
+    submit_attempts: attempts,
+    success_rate: success / attempts,
+    error_rate: errors / attempts,
+    blocked_rate: blocked / attempts,
+  };
+}
+
 async function bumpKv(env, eventName, timestamp) {
   if (!env.METRICS) return;
   const day = utcDayKey(timestamp);
@@ -120,6 +179,47 @@ export default {
 
     if (request.method === "GET" && (path === "/" || path === "/health")) {
       return json({ ok: true, service: "worksmart-form-analytics" }, 200, cors);
+    }
+
+    if (request.method === "GET" && path === "/metrics-summary") {
+      const metricsSecret = String(env.ANALYTICS_INGEST_SECRET || "").trim();
+      if (!metricsSecret) {
+        return json({ ok: false, error: "metrics_requires_ANALYTICS_INGEST_SECRET" }, 403, cors);
+      }
+      if (!verifyReadAuth(url, env)) {
+        return unauthorized();
+      }
+      if (!env.METRICS) {
+        return json(
+          {
+            ok: true,
+            note: "METRICS KV binding not configured",
+            days: 0,
+            range: null,
+            by_day: [],
+            rollup: {},
+            rates: computeFunnelRates({}),
+          },
+          200,
+          cors,
+        );
+      }
+      const days = clampInt(url.searchParams.get("days"), 1, 30, 7);
+      const endDay = utcDayKey(Date.now());
+      const startDay = addUtcDays(endDay, -(days - 1));
+      const { by_day, rollup } = await aggregateMetricsRange(env, startDay, endDay);
+      return json(
+        {
+          ok: true,
+          days,
+          range: { start: startDay, end: endDay },
+          by_day,
+          rollup,
+          rates: computeFunnelRates(rollup),
+        },
+        200,
+        cors,
+      );
     }
 
     if (request.method === "GET" && path === "/metrics") {
