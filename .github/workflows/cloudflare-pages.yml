@@ -1,7 +1,6 @@
-# Optional: deploy /public to Cloudflare Pages via GitHub Actions.
-# - Runs on push to main when site assets under public/ change (so merges that touch the site deploy).
-# - workflow_dispatch still available for a full redeploy any time.
-# Primary path without Actions: Cloudflare Pages → Connect to Git (production branch main, output public).
+# Deploy /public to Cloudflare Pages on every push to main (production).
+# Requires CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID in repo Actions secrets.
+# workflow_dispatch: rerun a deploy from the Actions UI without a new commit.
 
 name: Deploy Cloudflare Pages
 
@@ -9,8 +8,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "public/**"
   workflow_dispatch:
 
 jobs:
