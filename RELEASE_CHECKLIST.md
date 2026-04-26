@@ -17,7 +17,7 @@ Use this before merging meaningful production changes to `main`.
 
 ## Post-merge verification
 
-- [ ] Site deploy completes successfully in GitHub Actions / Cloudflare.
+- [ ] Site deploy completes successfully in Cloudflare (Git-connected Pages) or your chosen deploy path; optional GitHub Actions workflow is manual-only.
 - [ ] Homepage loads without broken assets.
 - [ ] Metadata checks:
   - [ ] title/description

@@ -9,7 +9,10 @@
 
 This site is **static files only**. It must live on **Pages**, not Workers.
 
-The GitHub Action in this repo deploys to **Pages** only (`cloudflare/pages-action`).
+**Deploy path (choose one):**
+
+- **Recommended (no GitHub Actions billing):** Cloudflare Pages **Connect to Git** — every push/merge to `main` builds from the repo. See §1.
+- **Optional:** Manual run of the workflow **Deploy Cloudflare Pages** in GitHub Actions (uses `cloudflare/pages-action`). It is **manual-only** so a locked/billed-out GitHub account does not block merges.
 
 ---
 
@@ -62,14 +65,14 @@ Everything in **`public/`** is the website root:
 
 ---
 
-## 3. GitHub Actions (optional CI)
+## 3. GitHub Actions (optional, manual only)
+
+The workflow **Deploy Cloudflare Pages** does **not** run on every push. Open **Actions** → **Deploy Cloudflare Pages** → **Run workflow** when you want an API-based deploy from GitHub.
 
 1. Cloudflare **Account ID** + **API token** (Pages: **Edit**).
 2. GitHub repo → **Settings** → **Secrets and variables** → **Actions**:
    - `CLOUDFLARE_API_TOKEN`
    - `CLOUDFLARE_ACCOUNT_ID`
-
-3. Pushes to **`main`** run `.github/workflows/cloudflare-pages.yml` and deploy **`public/`**.
 
 ---
 
