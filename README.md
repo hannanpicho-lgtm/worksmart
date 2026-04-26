@@ -86,6 +86,7 @@ State flow (conceptual):
 - `npm run verify:prod` — verify live production markers (and optional Worker `/health` if set in `pipeline.config.json`); **Deploy Cloudflare Pages** runs this after publish
 - `npm run optimize:og` — resize `public/og-image.png` to 1200×630 if needed and recompress (run after replacing OG art)
 - `npm run metrics:summary -- --days=7` — fetch Worker `/metrics-summary` using `FORM_ANALYTICS_WORKER_URL` + `ANALYTICS_INGEST_SECRET`
+- `npm run verify:telemetry` — smoke-test live `/ingest` using `deploy.productionUrl` origin (expects HTTP 204)
 
 Flags (fatigue reducers / escape hatches):
 
