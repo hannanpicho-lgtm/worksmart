@@ -110,6 +110,8 @@ Wire the site on the contact form (`data-analytics-endpoint`):
 
 After deploy, open the printed `*.workers.dev` URL with `/health` (for example `https://worksmart-form-analytics.<account>.workers.dev/health`) and confirm `{"ok":true,...}`.
 
+Run `npm run verify:telemetry` to post a synthetic `submit_attempt` to live `/ingest` using your production origin header. If it returns 403, your `ALLOWED_ORIGINS` value likely does not exactly match the live site origin.
+
 **Lock down browser traffic (recommended):** in the Worker → **Settings** → **Variables**, add `ALLOWED_ORIGINS` with a comma-separated list of exact origins that may call the ingest API (for example `https://worksmart-188.pages.dev,https://www.yourdomain.com`). If this variable is missing, the Worker allows any origin (`*`) for the ingest route (fine for local testing, weak for production).
 
 **Optional KV counters:** create a KV namespace, bind it as `METRICS` in `workers/form-analytics/wrangler.toml` (see comments in that file), redeploy, then use `GET /metrics?token=<ANALYTICS_INGEST_SECRET>` (today only) or `GET /metrics-summary?token=<ANALYTICS_INGEST_SECRET>&days=7` (rollup + success/blocked rates) only if you also set the `ANALYTICS_INGEST_SECRET` secret on the Worker. **Note:** the static site cannot safely send a Bearer token from `sendBeacon`; if you set `ANALYTICS_INGEST_SECRET`, browser beacons will fail ingest auth—prefer `ALLOWED_ORIGINS` (and optionally Cloudflare Access) for browser-sourced telemetry.

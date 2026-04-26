@@ -22,7 +22,8 @@
     "ship": "node scripts/ship.mjs",
     "ship:quick": "node scripts/ship.mjs --quick",
     "ship:open": "node scripts/ship.mjs --open",
-    "metrics:summary": "node scripts/metrics-summary.mjs"
+    "metrics:summary": "node scripts/metrics-summary.mjs",
+    "verify:telemetry": "node scripts/verify-telemetry.mjs"
   },
   "devDependencies": {
     "prettier": "^3.8.3",
