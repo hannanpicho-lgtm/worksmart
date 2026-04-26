@@ -91,7 +91,7 @@ After publish, that workflow runs **`scripts/verify-prod.mjs`**: it loads **`dep
 
 The site can POST anonymized form funnel events to a **separate** Cloudflare Worker (`workers/form-analytics/`). This is **not** your Pages project.
 
-**On GitHub (recommended with merge-to-`main`):** the workflow **Deploy form-analytics Worker** runs automatically when commits under `workers/form-analytics/` land on `main` (same `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets as Pages). You can also run it from **Actions** → **Run workflow**.
+**On GitHub (recommended with merge-to-`main`):** the workflow **Deploy form-analytics Worker** runs automatically when commits under `workers/form-analytics/` land on `main` (same `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets as Pages). You can also run it from **Actions** → **Run workflow**. If **`FORM_ANALYTICS_WORKER_URL`** is set (same variable as Pages inject), the workflow then requests **`GET /health`** and fails the job if the response is not `{ "ok": true }`.
 
 **From your machine:** when you change `workers/form-analytics/`, `npm run pipeline` can deploy that Worker after push (uses `CLOUDFLARE_API_TOKEN`; one-time `npx wrangler login`). Disable with `workers.formAnalytics.enabled: false` in `pipeline.config.json` or run the pipeline with `--skip-worker-deploy`.
 

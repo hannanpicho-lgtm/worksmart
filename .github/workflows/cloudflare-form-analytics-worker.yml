@@ -26,3 +26,20 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: workers/form-analytics
+
+      # Same variable as Pages inject (repo → Actions → Variables). Skipped if unset.
+      - name: Verify Worker /health (optional)
+        if: ${{ vars.FORM_ANALYTICS_WORKER_URL != '' }}
+        env:
+          BASE: ${{ vars.FORM_ANALYTICS_WORKER_URL }}
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.request
+          base = os.environ["BASE"].strip().rstrip("/")
+          url = f"{base}/health"
+          req = urllib.request.Request(url, headers={"User-Agent": "worksmart-ci-verify"})
+          with urllib.request.urlopen(req, timeout=30) as r:
+              data = json.load(r)
+          assert data.get("ok") is True, data
+          print("Worker health OK:", url)
+          PY
