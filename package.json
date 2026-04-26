@@ -15,6 +15,7 @@
     "deploy:prod": "node scripts/deploy-pages.mjs --env production",
     "deploy:preview": "node scripts/deploy-pages.mjs --env preview",
     "verify:prod": "node scripts/verify-prod.mjs",
+    "inject:analytics-endpoint": "node scripts/inject-analytics-endpoint.mjs",
     "worker:form-analytics:deploy": "npx wrangler deploy --config workers/form-analytics/wrangler.toml",
     "ship": "node scripts/ship.mjs",
     "ship:quick": "node scripts/ship.mjs --quick",

@@ -20,6 +20,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Inject form analytics Worker URL (optional)
+        env:
+          FORM_ANALYTICS_WORKER_URL: ${{ vars.FORM_ANALYTICS_WORKER_URL }}
+        run: node scripts/inject-analytics-endpoint.mjs
+
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
