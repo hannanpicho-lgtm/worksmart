@@ -228,54 +228,33 @@ ol {
 .logo {
   display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.0625rem;
-  letter-spacing: -0.02em;
+  line-height: 0;
   color: var(--text-primary);
-  transition:
-    color var(--t-interact) var(--ease-out),
-    filter var(--t-interact) var(--ease-out);
+  transition: filter var(--t-interact) var(--ease-out);
 }
 
 .logo:hover,
 .logo:focus-visible {
-  color: #ffffff;
   outline: none;
 }
 
-.logo:hover .logo-mark,
-.logo:focus-visible .logo-mark {
+.logo:hover .logo-img,
+.logo:focus-visible .logo-img {
   filter: brightness(1.08);
 }
 
-.logo--sm {
-  font-size: 1rem;
+.logo--sm .logo-img {
+  height: 2.35rem;
+  width: auto;
 }
 
-.logo-mark {
+.logo-img {
   display: block;
-  width: 1.85rem;
-  height: 1.85rem;
-  border-radius: var(--radius-sm);
-  background: linear-gradient(145deg, #637eea 0%, #5a4fcf 45%, #4a8fa8 100%);
-  box-shadow:
-    var(--shadow-1),
-    0 4px 14px -2px rgba(50, 70, 150, 0.4);
-}
-
-.logo-text {
-  font-family: "Montserrat", var(--font-display);
-  font-size: 1.02rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.28);
-}
-
-.logo-text--sm {
-  font-size: 0.89rem;
+  height: 2.75rem;
+  width: auto;
+  max-width: min(42vw, 11.5rem);
+  object-fit: contain;
+  object-position: left center;
 }
 
 .nav-link {

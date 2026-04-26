@@ -22,16 +22,17 @@ If **both** Git-connected Pages and this workflow are active on the same repo/br
 
 Everything in **`public/`** is the website root:
 
-| File           | Purpose                                                          |
-| -------------- | ---------------------------------------------------------------- |
-| `index.html`   | Main page                                                        |
-| `styles.css`   | Styles                                                           |
-| `favicon.svg`  | Browser tab icon                                                 |
-| `og-image.png` | Open Graph / social preview (1200×630; linked from `index.html`) |
-| `og-image.svg` | Optional alternate art (not used in meta if PNG is set)          |
-| `robots.txt`   | Crawler rules                                                    |
-| `sitemap.xml`  | Search engines (single URL for now)                              |
-| `_headers`     | Security headers (Cloudflare Pages)                              |
+| File                 | Purpose                                                          |
+| -------------------- | ---------------------------------------------------------------- |
+| `index.html`         | Main page                                                        |
+| `styles.css`         | Styles                                                           |
+| `worksmart-logo.png` | Brand logo (nav, favicon, JSON-LD; source asset for OG art)      |
+| `favicon.svg`        | Optional legacy icon (not used when PNG favicon is set)          |
+| `og-image.png`       | Open Graph / social preview (1200×630; linked from `index.html`) |
+| `og-image.svg`       | Optional alternate art (not used in meta if PNG is set)          |
+| `robots.txt`         | Crawler rules                                                    |
+| `sitemap.xml`        | Search engines (single URL for now)                              |
+| `_headers`           | Security headers (Cloudflare Pages)                              |
 
 **Cloudflare:** build output directory = **`public`**.
 
@@ -129,6 +130,7 @@ If you zip instead of Git, the **zip root** must contain **all** `public/` asset
 ```text
 index.html
 styles.css
+worksmart-logo.png
 favicon.svg
 og-image.png
 og-image.svg
