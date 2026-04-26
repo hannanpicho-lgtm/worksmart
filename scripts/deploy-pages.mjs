@@ -31,6 +31,29 @@ function resolveDeployMode(modeFromConfig, hookUrl) {
   return hookUrl ? "hook" : "api";
 }
 
+async function triggerViaApi({ token, accountId, projectName, branch, hookEnvVar, hookUrl }) {
+  try {
+    await triggerPagesDeployment({
+      token,
+      accountId,
+      projectName,
+      branch,
+    });
+  } catch (error) {
+    if (String(error.message).includes("manifest") && hookUrl) {
+      process.stdout.write("API trigger rejected; falling back to deploy hook.\n");
+      await triggerDeployHook({ hookUrl });
+      return;
+    }
+    if (String(error.message).includes("manifest")) {
+      throw new Error(
+        `Cloudflare API rejected deployment trigger for Git-connected Pages project.\nCreate a deploy hook and set ${hookEnvVar}.`,
+      );
+    }
+    throw error;
+  }
+}
+
 async function verifyProduction(config) {
   const targetUrl = config?.deploy?.productionUrl;
   const markers = config?.deploy?.verifyContains ?? [];
@@ -69,26 +92,25 @@ async function main() {
     if (!hookUrl) {
       throw new Error(`Deploy mode is "hook" but ${hookEnvVar} is not set.`);
     }
-    await triggerDeployHook({ hookUrl });
-  } else if (deployMode === "api") {
     try {
-      await triggerPagesDeployment({
-        token,
-        accountId,
-        projectName,
-        branch,
-      });
+      await triggerDeployHook({ hookUrl });
     } catch (error) {
-      if (String(error.message).includes("manifest") && hookUrl) {
-        process.stdout.write("API trigger rejected; falling back to deploy hook.\n");
-        await triggerDeployHook({ hookUrl });
-      } else if (String(error.message).includes("manifest")) {
-        throw new Error(
-          `Cloudflare API rejected deployment trigger for Git-connected Pages project.\nCreate a deploy hook and set ${hookEnvVar}.`,
-        );
+      if (config.deploy?.mode === "auto") {
+        process.stdout.write("Deploy hook failed; falling back to API trigger.\n");
+        await triggerViaApi({
+          token,
+          accountId,
+          projectName,
+          branch,
+          hookEnvVar,
+          hookUrl,
+        });
+      } else {
+        throw error;
       }
-      throw error;
     }
+  } else if (deployMode === "api") {
+    await triggerViaApi({ token, accountId, projectName, branch, hookEnvVar, hookUrl });
   } else {
     throw new Error(`Unsupported deploy mode "${deployMode}". Use auto, hook, or api.`);
   }

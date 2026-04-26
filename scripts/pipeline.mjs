@@ -153,6 +153,38 @@ function resolveDeployMode(configuredMode, hookUrl) {
   return hookUrl ? "hook" : "api";
 }
 
+async function triggerPagesViaApiWithFallback({
+  token,
+  accountId,
+  projectName,
+  branch,
+  hookUrl,
+  hookEnvVar,
+}) {
+  try {
+    await triggerPagesDeployment({
+      token,
+      accountId,
+      projectName,
+      branch,
+    });
+  } catch (error) {
+    if (String(error.message).includes("manifest") && hookUrl) {
+      process.stdout.write("API trigger rejected; falling back to deploy hook.\n");
+      await triggerDeployHook({ hookUrl });
+      return;
+    }
+    if (String(error.message).includes("manifest")) {
+      throw new Error(
+        `Cloudflare API rejected deployment trigger for Git-connected Pages project.\n` +
+          `Create a Pages deploy hook and set ${hookEnvVar}.\n` +
+          "Cloudflare dashboard -> Workers & Pages -> your project -> Settings -> Build & deployments -> Deploy hooks.",
+      );
+    }
+    throw error;
+  }
+}
+
 function requireFullyAutomatedDeployMode(mode) {
   if (mode === "manual") {
     throw new Error(
@@ -435,31 +467,34 @@ async function main() {
                 "Create a Pages deploy hook and export the env variable.",
             );
           }
-          await triggerDeployHook({ hookUrl });
-        } else if (deployMode === "api") {
           try {
-            await triggerPagesDeployment({
-              token,
-              accountId,
-              projectName,
-              branch: deployBranch,
-            });
+            await triggerDeployHook({ hookUrl });
           } catch (error) {
-            if (String(error.message).includes("manifest") && hookUrl) {
+            if ((config.deploy.mode ?? "manual") === "auto") {
               process.stdout.write(
-                `API trigger rejected for ${environment}; falling back to deploy hook.\n`,
+                `Deploy hook failed for ${environment}; falling back to API trigger.\n`,
               );
-              await triggerDeployHook({ hookUrl });
-            } else if (String(error.message).includes("manifest")) {
-              throw new Error(
-                `Cloudflare API rejected deployment trigger for Git-connected Pages project.\n` +
-                  `Create a Pages deploy hook and set ${hookEnvVar}.\n` +
-                  "Cloudflare dashboard -> Workers & Pages -> your project -> Settings -> Build & deployments -> Deploy hooks.",
-              );
+              await triggerPagesViaApiWithFallback({
+                token,
+                accountId,
+                projectName,
+                branch: deployBranch,
+                hookUrl,
+                hookEnvVar,
+              });
             } else {
               throw error;
             }
           }
+        } else if (deployMode === "api") {
+          await triggerPagesViaApiWithFallback({
+            token,
+            accountId,
+            projectName,
+            branch: deployBranch,
+            hookUrl,
+            hookEnvVar,
+          });
         } else {
           throw new Error(
             `Unknown deploy mode "${deployMode}". Valid: hook | api | auto`,
