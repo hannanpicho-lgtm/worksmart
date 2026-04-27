@@ -84,6 +84,8 @@ After publish, that workflow runs **`scripts/verify-prod.mjs`**: it loads **`dep
 
 When **`FORM_ANALYTICS_WORKER_URL`** is set in Actions variables, the same workflow also runs **`npm run verify:telemetry`** after publish and fails fast if live `/ingest` rejects your production origin.
 
+The workflow **Monitor Production** also runs every 30 minutes (and on manual dispatch) to execute `verify-prod` plus `verify:telemetry` (when `FORM_ANALYTICS_WORKER_URL` is set), so regressions are caught even without new commits.
+
 ---
 
 ## 4. Web Analytics
