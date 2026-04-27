@@ -157,3 +157,4 @@ _headers
 - **Worker vs Pages:** static site must be a **Pages** project (`.pages.dev`), not a Worker (`.workers.dev`).
 - **No fresh deployment after merge:** follow `RUNBOOK_DEPLOY_STUCK.md` (workflow trigger/validation, secrets, rerun, rollback).
 - **Unexpected merges without checks:** configure branch protection via `RUNBOOK_BRANCH_PROTECTION.md`.
+- **Slack alert fired (Deploy/Monitor):** follow `RUNBOOK_INCIDENT_RESPONSE.md`.
