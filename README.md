@@ -88,6 +88,8 @@ State flow (conceptual):
 - `npm run metrics:summary -- --days=7` — fetch Worker `/metrics-summary` using `FORM_ANALYTICS_WORKER_URL` + `ANALYTICS_INGEST_SECRET`
 - `npm run verify:telemetry` — smoke-test live `/ingest` using `deploy.productionUrl` origin (expects HTTP 204)
 
+In GitHub Actions, **Monitor Production** runs every 30 minutes to execute `verify-prod` and (if configured) `verify:telemetry` against live production.
+
 Flags (fatigue reducers / escape hatches):
 
 - `--skip-deploy` — skip Cloudflare **Pages** deploy + verify stages only
