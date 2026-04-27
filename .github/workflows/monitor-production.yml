@@ -33,7 +33,7 @@ jobs:
         run: node scripts/verify-telemetry.mjs
 
       - name: Notify Slack on failure (optional)
-        if: ${{ failure() && secrets.SLACK_WEBHOOK_URL != '' }}
+        if: ${{ failure() }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_ALERT_COOLDOWN_MINUTES: ${{ vars.SLACK_ALERT_COOLDOWN_MINUTES }}
@@ -47,6 +47,10 @@ jobs:
           python - <<'PY'
           import json, os, urllib.request
           from datetime import datetime, timezone
+
+          if not os.environ.get("SLACK_WEBHOOK_URL", "").strip():
+              print("Slack webhook not configured; skipping alert.")
+              raise SystemExit(0)
 
           repo = os.environ["REPO"]
           run_id = os.environ["RUN_ID"]
