@@ -1,4 +1,4 @@
-﻿name: Monitor Production
+name: Monitor Production
 
 on:
   schedule:
@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20"
 
