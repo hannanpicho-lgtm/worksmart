@@ -39,7 +39,7 @@ Completed in this phase:
 - Added a short incident response runbook for monitor/deploy Slack alerts (`RUNBOOK_INCIDENT_RESPONSE.md`).
 - Added lightweight workflow status badges to the README.
 
-## Phase 5 — Dependency hygiene (In Progress)
+## Phase 5 — Dependency hygiene (Completed)
 
 Goal: keep npm packages and GitHub Actions up to date with reviewable, automated pull requests.
 
@@ -51,3 +51,17 @@ Next optional items:
 
 1. Triage the first few Dependabot PRs: merge if Quality Checks are green, or pin versions if an upgrade breaks the pipeline.
 2. If you add a custom domain, extend `verify-prod` / `ALLOWED_ORIGINS` and document the exact origin in **DEPLOY.md** (one line in the environment section is enough).
+
+## Phase 6 — Merge Resilience (In Progress)
+
+Goal: prevent late pipeline failures by catching branch drift from `main` before PR merge automation.
+
+Completed in this phase:
+
+- Added `npm run branch:check` to verify branch sync against `origin/main`.
+- Integrated branch sync validation into `npm run readiness:report` as a required check.
+
+Next optional items:
+
+1. Add a `pipeline --sync` mode that auto-merges/rebases latest `main` before pipeline stages.
+2. Optionally expose the base branch/remote in `pipeline.config.json` and feed into `branch:check`.
