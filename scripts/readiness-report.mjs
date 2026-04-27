@@ -130,6 +130,7 @@ checks.push({
   optional: false,
   status: 0,
 });
+checks.push(runCheck("branch sync check", "npm", ["run", "branch:check"]));
 checks.push(runCheck("environment doctor", "npm", ["run", "doctor:env"]));
 checks.push(runCheck("format check", "npm", ["run", "format:check"]));
 checks.push(runCheck("tests", "npm", ["test"]));

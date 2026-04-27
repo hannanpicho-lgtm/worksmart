@@ -97,6 +97,7 @@ State flow (conceptual):
 - `npm run metrics:summary -- --days=7` — fetch Worker `/metrics-summary` using `FORM_ANALYTICS_WORKER_URL` + `ANALYTICS_INGEST_SECRET`
 - `npm run verify:telemetry` — smoke-test live `/ingest` using `deploy.productionUrl` origin (expects HTTP 204)
 - `npm run doctor:env` — validate required local env vars before pipeline/deploy runs
+- `npm run branch:check` — verify your branch is not behind `origin/main` before pipeline (fetches latest `main`)
 - `npm run readiness:report` — one-shot preflight report (auto-loads `.env.pipeline` if present; branch + pending changes + doctor + format + tests, plus optional ops snapshot)
 - `npm run ops:status` — print live Pages/Worker health + latest main-branch workflow run statuses
 - `npm run ops:status -- --json` — same snapshot in machine-readable JSON
@@ -139,6 +140,7 @@ If your network gets challenged by Cloudflare API/hook endpoints, use this repo 
 - `auto` — recommended default: if deploy hook env var exists, use `hook`; otherwise use `api`
 - If `api` fails with a Git-connected manifest error and a deploy hook exists, pipeline falls back to `hook` automatically
 - If hook triggering is blocked (for example 403 challenge), pipeline/deploy command falls back to `api` automatically in `auto` mode
+- If neither API nor hook trigger is available for a Git-connected Pages project, pipeline waits for the Git-driven Pages deployment and uses `deploy.gitConnectedTimeoutMs` (default 900000 ms) before timing out
 - `hook` — uses `CLOUDFLARE_DEPLOY_HOOK_URL_*`
 - `api` — uses the Pages deployment API (may fail on some Git-connected projects; hooks are the fallback)
 

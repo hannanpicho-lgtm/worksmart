@@ -27,6 +27,7 @@
     "verifyRetryDelayMs": 5000,
     "pollIntervalMs": 8000,
     "timeoutMs": 300000,
+    "gitConnectedTimeoutMs": 900000,
     "skipDuplicateCommitDeploy": true
   },
   "workers": {

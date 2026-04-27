@@ -363,7 +363,7 @@ async function main() {
 
   await stage(
     "deploying",
-    "Check Cloudflare token/account/project, or run with --skip-deploy.",
+    "If using Git-connected Pages without deploy hooks, wait for Cloudflare Git build or increase deploy timeout; otherwise check Cloudflare token/account/project.",
     async () => {
       setState(STATE.DEPLOYING);
     if (skipDeploy || !config.deploy.enabled) {
@@ -433,6 +433,7 @@ async function main() {
         const hookUrl = process.env[hookEnvVar];
         const deployMode = resolveDeployMode(config.deploy.mode, hookUrl);
         requireFullyAutomatedDeployMode(deployMode);
+        let usedGitConnectedFallback = false;
 
         if (deployMode === "hook") {
           if (!hookUrl) {
@@ -459,6 +460,7 @@ async function main() {
               });
               if (!triggerResult.triggered && triggerResult.reason) {
                 process.stdout.write(`${triggerResult.reason}\n`);
+                usedGitConnectedFallback = true;
               }
             } else {
               throw error;
@@ -476,6 +478,7 @@ async function main() {
           });
           if (!triggerResult.triggered && triggerResult.reason) {
             process.stdout.write(`${triggerResult.reason}\n`);
+            usedGitConnectedFallback = true;
           }
         } else {
           throw new Error(
@@ -483,6 +486,14 @@ async function main() {
           );
         }
         process.stdout.write(`✔ Stage: deploy triggered (${environment})\n`);
+        const effectiveTimeoutMs = usedGitConnectedFallback
+          ? (config.deploy.gitConnectedTimeoutMs ?? Math.max(config.deploy.timeoutMs ?? 300000, 900000))
+          : config.deploy.timeoutMs;
+        if (usedGitConnectedFallback && effectiveTimeoutMs > (config.deploy.timeoutMs ?? 0)) {
+          process.stdout.write(
+            `Using extended deployment wait timeout (${Math.round(effectiveTimeoutMs / 1000)}s) for Git-driven Pages build.\n`,
+          );
+        }
 
         const deployment = await waitForDeploymentSuccess({
           token,
@@ -491,7 +502,7 @@ async function main() {
           branch: deployBranch,
           environment,
           expectedCommitSha: targetSha,
-          timeoutMs: config.deploy.timeoutMs,
+          timeoutMs: effectiveTimeoutMs,
           pollIntervalMs: config.deploy.pollIntervalMs,
         });
         runLog.deployments.push({

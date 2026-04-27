@@ -25,6 +25,7 @@
     "metrics:summary": "node scripts/metrics-summary.mjs",
     "verify:telemetry": "node scripts/verify-telemetry.mjs",
     "doctor:env": "node scripts/doctor-env.mjs",
+    "branch:check": "node scripts/branch-check.mjs",
     "readiness:report": "node scripts/readiness-report.mjs",
     "ops:status": "node scripts/ops-status.mjs",
     "ops:incident-template": "node scripts/ops-incident-template.mjs"
