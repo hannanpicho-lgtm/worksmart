@@ -28,7 +28,7 @@ Completed in this phase:
 - Added branch-protection required-check runbook (`RUNBOOK_BRANCH_PROTECTION.md`).
 - Added deploy-stuck + rollback runbook (`RUNBOOK_DEPLOY_STUCK.md`).
 
-## Phase 4 — Stability and Operations (In Progress)
+## Phase 4 — Stability and Operations (Completed)
 
 Goal: improve day-2 operations visibility and response speed.
 
@@ -36,8 +36,18 @@ Completed in this phase:
 
 - Added `npm run ops:status` snapshot command (live Pages/Worker health + latest workflow statuses).
 - Added JSON mode (`npm run ops:status -- --json`) and incident template generator (`npm run ops:incident-template`).
+- Added a short incident response runbook for monitor/deploy Slack alerts (`RUNBOOK_INCIDENT_RESPONSE.md`).
+- Added lightweight workflow status badges to the README.
 
-Next recommended items:
+## Phase 5 — Dependency hygiene (In Progress)
 
-1. ✅ Add a short incident response runbook for monitor/deploy Slack alerts (`RUNBOOK_INCIDENT_RESPONSE.md`).
-2. ✅ Add lightweight uptime/public status badge to README.
+Goal: keep npm packages and GitHub Actions up to date with reviewable, automated pull requests.
+
+Completed in this phase:
+
+- Added Dependabot version updates for `npm` and `github-actions` (see `.github/dependabot.yml`).
+
+Next optional items:
+
+1. Triage the first few Dependabot PRs: merge if Quality Checks are green, or pin versions if an upgrade breaks the pipeline.
+2. If you add a custom domain, extend `verify-prod` / `ALLOWED_ORIGINS` and document the exact origin in **DEPLOY.md** (one line in the environment section is enough).

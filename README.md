@@ -97,6 +97,7 @@ State flow (conceptual):
 - `npm run metrics:summary -- --days=7` — fetch Worker `/metrics-summary` using `FORM_ANALYTICS_WORKER_URL` + `ANALYTICS_INGEST_SECRET`
 - `npm run verify:telemetry` — smoke-test live `/ingest` using `deploy.productionUrl` origin (expects HTTP 204)
 - `npm run doctor:env` — validate required local env vars before pipeline/deploy runs
+- `npm run readiness:report` — one-shot preflight report (auto-loads `.env.pipeline` if present; branch + pending changes + doctor + format + tests, plus optional ops snapshot)
 - `npm run ops:status` — print live Pages/Worker health + latest main-branch workflow run statuses
 - `npm run ops:status -- --json` — same snapshot in machine-readable JSON
 - `npm run ops:incident-template` — generate a ready-to-fill incident report with current ops snapshot
