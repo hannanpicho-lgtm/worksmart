@@ -23,7 +23,8 @@
     "ship:quick": "node scripts/ship.mjs --quick",
     "ship:open": "node scripts/ship.mjs --open",
     "metrics:summary": "node scripts/metrics-summary.mjs",
-    "verify:telemetry": "node scripts/verify-telemetry.mjs"
+    "verify:telemetry": "node scripts/verify-telemetry.mjs",
+    "doctor:env": "node scripts/doctor-env.mjs"
   },
   "devDependencies": {
     "prettier": "^3.8.3",
