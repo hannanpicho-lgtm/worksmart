@@ -17,11 +17,13 @@ If not present, the issue is merge/branch, not deployment.
 Expected: run exists for the merge commit and has `completed / success`.
 
 If there is **no run**:
+
 - Check workflow trigger in `.github/workflows/cloudflare-pages.yml` (`on.push.branches: [main]`)
 - Check repo Actions settings are enabled
 - Check workflow file exists on `main`
 
 If run exists but **fails before jobs start**:
+
 - Likely workflow validation/syntax issue
 - Open run summary for "workflow is not valid" type errors
 - Fix workflow YAML and merge to `main` (Quality Checks includes `actionlint`)
@@ -31,6 +33,7 @@ If run exists but **fails before jobs start**:
 Repo -> **Settings** -> **Secrets and variables** -> **Actions**
 
 Required secrets:
+
 - `CLOUDFLARE_API_TOKEN`
 - `CLOUDFLARE_ACCOUNT_ID`
 
@@ -39,6 +42,7 @@ Common failure: token rotated locally but secret not updated in GitHub.
 ## 4) Re-run deploy manually
 
 If workflow file is fixed and secrets are valid:
+
 - Actions -> **Deploy Cloudflare Pages** -> **Run workflow** on `main`
 
 Then verify Cloudflare Pages timestamp updates.
@@ -51,6 +55,7 @@ After deploy success:
 - `npm run verify:telemetry` (if analytics endpoint is configured)
 
 If telemetry fails with 403:
+
 - Worker `ALLOWED_ORIGINS` must include exact origin, e.g. `https://worksmart-188.pages.dev` (no trailing slash).
 
 ## 6) Emergency fast-path rollback
@@ -64,6 +69,7 @@ If production is bad and you need a quick restore:
 ## 7) If still stuck
 
 Collect these for diagnosis:
+
 - Failing workflow run URL
 - First failing step name + error text
 - Cloudflare project name shown in workflow config
