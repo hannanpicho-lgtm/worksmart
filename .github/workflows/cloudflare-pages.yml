@@ -10,9 +10,14 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: deploy-cloudflare-pages-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       contents: read
       deployments: write
