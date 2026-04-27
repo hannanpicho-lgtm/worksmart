@@ -240,7 +240,8 @@ ol {
 
 .logo:hover .logo-img,
 .logo:focus-visible .logo-img {
-  filter: brightness(1.08);
+  filter: saturate(1.12) hue-rotate(6deg) brightness(1.06) contrast(1.02)
+    drop-shadow(0 0 12px rgba(110, 156, 255, 0.34));
 }
 
 .logo--sm .logo-img {
@@ -255,6 +256,12 @@ ol {
   max-width: min(42vw, 11.5rem);
   object-fit: contain;
   object-position: left center;
+  opacity: 0.96;
+  filter: saturate(1.02) hue-rotate(8deg) brightness(0.98) contrast(0.98)
+    drop-shadow(0 0 10px rgba(104, 146, 255, 0.26));
+  transition:
+    filter var(--t-interact) var(--ease-out),
+    opacity var(--t-interact) var(--ease-out);
 }
 
 .nav-link {
