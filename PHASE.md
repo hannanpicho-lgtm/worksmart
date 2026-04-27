@@ -40,4 +40,4 @@ Completed in this phase:
 Next recommended items:
 
 1. Add a short incident response runbook for monitor/deploy Slack alerts.
-2. Add lightweight uptime/public status badge to README (optional).
+2. ✅ Add lightweight uptime/public status badge to README.
