@@ -2,6 +2,15 @@
 
 **Deploy root:** the `public/` folder (HTML, CSS, assets). Configure Cloudflare **Pages** with build output directory **`public`**.
 
+## Public status
+
+[![Quality Checks](https://github.com/hannanpicho-lgtm/worksmart/actions/workflows/quality-checks.yml/badge.svg)](https://github.com/hannanpicho-lgtm/worksmart/actions/workflows/quality-checks.yml)
+[![Deploy Cloudflare Pages](https://github.com/hannanpicho-lgtm/worksmart/actions/workflows/cloudflare-pages.yml/badge.svg)](https://github.com/hannanpicho-lgtm/worksmart/actions/workflows/cloudflare-pages.yml)
+[![Monitor Production](https://github.com/hannanpicho-lgtm/worksmart/actions/workflows/monitor-production.yml/badge.svg)](https://github.com/hannanpicho-lgtm/worksmart/actions/workflows/monitor-production.yml)
+
+- Site: `https://worksmart-188.pages.dev/`
+- Worker health: `https://worksmart-form-analytics.hannanpicho.workers.dev/health`
+
 | Doc                                          | What                                                                             |
 | -------------------------------------------- | -------------------------------------------------------------------------------- |
 | [DEPLOY.md](DEPLOY.md)                       | Cloudflare setup, custom domain, Git, CI, analytics, optional form-ingest Worker |
