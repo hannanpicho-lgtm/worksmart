@@ -82,6 +82,8 @@ You can also open **Actions** → **Deploy Cloudflare Pages** → **Run workflow
 
 After publish, that workflow runs **`scripts/verify-prod.mjs`**: it loads **`deploy.productionUrl`** from `pipeline.config.json`, retries the fetch (see **`deploy.verifyFetchAttempts`** / **`deploy.verifyRetryDelayMs`**), and checks **`deploy.verifyContains`**. To also verify the form-analytics Worker, set **`workers.formAnalytics.verifyHealthUrl`** to your Worker’s `/health` URL (e.g. `https://worksmart-form-analytics.<account>.workers.dev/health`); leave the key unset to skip.
 
+When **`FORM_ANALYTICS_WORKER_URL`** is set in Actions variables, the same workflow also runs **`npm run verify:telemetry`** after publish and fails fast if live `/ingest` rejects your production origin.
+
 ---
 
 ## 4. Web Analytics

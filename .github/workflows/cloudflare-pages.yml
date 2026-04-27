@@ -40,3 +40,7 @@ jobs:
 
       - name: Verify production (Pages + optional Worker)
         run: node scripts/verify-prod.mjs
+
+      - name: Verify telemetry ingest (when analytics endpoint is configured)
+        if: ${{ vars.FORM_ANALYTICS_WORKER_URL != '' }}
+        run: node scripts/verify-telemetry.mjs
