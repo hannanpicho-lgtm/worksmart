@@ -35,6 +35,47 @@ export async function triggerDeployHook({ hookUrl }) {
   }
 }
 
+export async function triggerPagesViaApiWithFallback({
+  token,
+  accountId,
+  projectName,
+  branch,
+  hookUrl,
+  hookEnvVar,
+  allowGitConnectedFallback = false,
+}) {
+  try {
+    await triggerPagesDeployment({
+      token,
+      accountId,
+      projectName,
+      branch,
+    });
+    return { triggered: true, method: "api" };
+  } catch (error) {
+    if (String(error.message).includes("manifest") && hookUrl) {
+      await triggerDeployHook({ hookUrl });
+      return { triggered: true, method: "hook-fallback" };
+    }
+    if (String(error.message).includes("manifest")) {
+      if (allowGitConnectedFallback) {
+        return {
+          triggered: false,
+          method: "none",
+          reason:
+            "Cloudflare API rejected manual trigger for Git-connected Pages project; waiting for the Git-driven deployment instead.",
+        };
+      }
+      throw new Error(
+        `Cloudflare API rejected deployment trigger for Git-connected Pages project.\n` +
+          `Create a Pages deploy hook and set ${hookEnvVar}.\n` +
+          "Cloudflare dashboard -> Workers & Pages -> your project -> Settings -> Build & deployments -> Deploy hooks.",
+      );
+    }
+    throw error;
+  }
+}
+
 export async function getLatestDeployment({
   token,
   accountId,
@@ -67,6 +108,7 @@ export async function waitForDeploymentSuccess({
   projectName,
   branch = "main",
   environment = "production",
+  expectedCommitSha = null,
   timeoutMs = 300000,
   pollIntervalMs = 8000,
 }) {
@@ -81,7 +123,10 @@ export async function waitForDeploymentSuccess({
     });
 
     const stage = deployment?.latest_stage?.status;
-    if (stage === "success") return deployment;
+    const sha = deploymentCommitSha(deployment);
+    if (stage === "success") {
+      if (!expectedCommitSha || sha === expectedCommitSha) return deployment;
+    }
     if (stage === "failure") {
       throw new Error(`Cloudflare deployment failed: ${deployment?.id ?? "unknown deployment"}`);
     }

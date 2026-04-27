@@ -41,16 +41,26 @@ function loadEnvFile(path) {
 }
 
 function runCommand(command, args) {
-  const result = spawnSync(command, args, {
-    encoding: "utf8",
-    shell: process.platform === "win32",
-    stdio: ["ignore", "pipe", "pipe"],
-  });
+  const isWindows = process.platform === "win32";
+  const commandLine = [command, ...args]
+    .map((part) => (/[\s"]/u.test(part) ? `"${part.replaceAll('"', '\\"')}"` : part))
+    .join(" ");
+  const result = isWindows
+    ? spawnSync(commandLine, {
+        encoding: "utf8",
+        shell: true,
+        stdio: ["ignore", "pipe", "pipe"],
+      })
+    : spawnSync(command, args, {
+        encoding: "utf8",
+        shell: false,
+        stdio: ["ignore", "pipe", "pipe"],
+      });
 
   return {
     status: result.status ?? 1,
     stdout: String(result.stdout || ""),
-    stderr: String(result.stderr || ""),
+    stderr: `${String(result.stderr || "")}${result.error ? `\n${result.error.message}` : ""}`,
   };
 }
 
