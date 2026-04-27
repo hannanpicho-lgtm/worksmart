@@ -88,6 +88,7 @@ State flow (conceptual):
 - `npm run metrics:summary -- --days=7` — fetch Worker `/metrics-summary` using `FORM_ANALYTICS_WORKER_URL` + `ANALYTICS_INGEST_SECRET`
 - `npm run verify:telemetry` — smoke-test live `/ingest` using `deploy.productionUrl` origin (expects HTTP 204)
 - `npm run doctor:env` — validate required local env vars before pipeline/deploy runs
+- `npm run ops:status` — print live Pages/Worker health + latest main-branch workflow run statuses
 
 In GitHub Actions, **Monitor Production** runs every 30 minutes to execute `verify-prod` and (if configured) `verify:telemetry` against live production.
 

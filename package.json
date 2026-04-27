@@ -24,7 +24,8 @@
     "ship:open": "node scripts/ship.mjs --open",
     "metrics:summary": "node scripts/metrics-summary.mjs",
     "verify:telemetry": "node scripts/verify-telemetry.mjs",
-    "doctor:env": "node scripts/doctor-env.mjs"
+    "doctor:env": "node scripts/doctor-env.mjs",
+    "ops:status": "node scripts/ops-status.mjs"
   },
   "devDependencies": {
     "prettier": "^3.8.3",
