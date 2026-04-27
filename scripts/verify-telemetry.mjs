@@ -65,6 +65,15 @@ const headers = {
 const secret = String(process.env.ANALYTICS_INGEST_SECRET || "").trim();
 if (secret) headers.Authorization = `Bearer ${secret}`;
 
+const preflightRes = await fetch(ingestUrl, {
+  method: "OPTIONS",
+  headers: {
+    Origin: origin,
+    "Access-Control-Request-Method": "POST",
+    "Access-Control-Request-Headers": secret ? "content-type,authorization" : "content-type",
+  },
+});
+
 const ingestRes = await fetch(ingestUrl, {
   method: "POST",
   headers,
@@ -74,6 +83,18 @@ const ingestRes = await fetch(ingestUrl, {
 if (ingestRes.status !== 204) {
   const body = await ingestRes.text();
   console.error(`Telemetry ingest failed: ${ingestRes.status} ${ingestRes.statusText}`);
+  console.error(`- site: ${siteUrl}`);
+  console.error(`- endpoint: ${endpoint}`);
+  console.error(`- ingest: ${ingestUrl}`);
+  console.error(`- origin header sent: ${origin}`);
+  console.error(
+    `- preflight: ${preflightRes.status} ${preflightRes.statusText}; allow-origin=${preflightRes.headers.get("access-control-allow-origin") || "<none>"}`,
+  );
+  if (ingestRes.status === 403) {
+    console.error(
+      `Hint: set Worker ALLOWED_ORIGINS to include exactly: ${origin} (no trailing slash).`,
+    );
+  }
   if (body) console.error(body.slice(0, 400));
   process.exit(1);
 }
