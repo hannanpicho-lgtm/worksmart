@@ -150,3 +150,7 @@ Run `npm run content:check` before release-oriented PRs. It fails if known place
 - `public/sitemap.xml` (site URL)
 
 When you add a custom domain, replace `https://worksmart.pages.dev` in `public/index.html`, `robots.txt`, and `sitemap.xml` (search the repo).
+
+## Operational runbooks
+
+- Deploy timestamp not updating after merge: `RUNBOOK_DEPLOY_STUCK.md`

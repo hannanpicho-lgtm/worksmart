@@ -155,3 +155,4 @@ _headers
 
 - **Raw CSS in browser:** you opened `/styles.css` or the deploy root omitted `index.html` — use output directory **`public`** or fix the zip layout.
 - **Worker vs Pages:** static site must be a **Pages** project (`.pages.dev`), not a Worker (`.workers.dev`).
+- **No fresh deployment after merge:** follow `RUNBOOK_DEPLOY_STUCK.md` (workflow trigger/validation, secrets, rerun, rollback).
