@@ -110,6 +110,7 @@ If your network gets challenged by Cloudflare API/hook endpoints, use this repo 
 - `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_PROJECT_NAME` — Pages deploy stages
 - `CLOUDFLARE_DEPLOY_HOOK_URL_PREVIEW` / `CLOUDFLARE_DEPLOY_HOOK_URL_PRODUCTION` — when `deploy.mode` is `hook`
 - `SLACK_WEBHOOK_URL` (optional GitHub Actions secret) — posts Deploy/Monitor workflow failures to Slack
+- `SLACK_ALERT_COOLDOWN_MINUTES` (optional GitHub Actions variable, default `30`) — suppresses repeat Slack alerts for back-to-back failures
 
 ### Safety / fail-fast
 
