@@ -82,7 +82,7 @@ You can also open **Actions** → **Deploy Cloudflare Pages** → **Run workflow
 
 After publish, that workflow runs **`scripts/verify-prod.mjs`**: it loads **`deploy.productionUrl`** from `pipeline.config.json`, retries the fetch (see **`deploy.verifyFetchAttempts`** / **`deploy.verifyRetryDelayMs`**), and checks **`deploy.verifyContains`**. To also verify the form-analytics Worker, set **`workers.formAnalytics.verifyHealthUrl`** to your Worker’s `/health` URL (e.g. `https://worksmart-form-analytics.<account>.workers.dev/health`); leave the key unset to skip.
 
-When **`FORM_ANALYTICS_WORKER_URL`** is set in Actions variables, the same workflow also runs **`npm run verify:telemetry`** after publish and fails fast if live `/ingest` rejects your production origin. The workflow uses concurrency + timeout guards so stale deploy runs are cancelled and hung jobs terminate automatically.
+When **`FORM_ANALYTICS_WORKER_URL`** is set in Actions variables, the same workflow also runs **`npm run verify:telemetry`** after publish and fails fast if live `/ingest` rejects your production origin. The workflow uses concurrency + timeout guards so stale deploy runs are cancelled and hung jobs terminate automatically. If GitHub secret `SLACK_WEBHOOK_URL` is present, failed deploy runs also post a Slack alert with the run URL.
 
 The workflow **Monitor Production** also runs every 30 minutes (and on manual dispatch) to execute `verify-prod` plus `verify:telemetry` (when `FORM_ANALYTICS_WORKER_URL` is set), so regressions are caught even without new commits. It has a timeout guard to prevent long-running monitor jobs.
 
