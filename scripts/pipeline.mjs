@@ -17,7 +17,7 @@ import {
   deploymentCommitSha,
   getLatestDeployment,
   triggerDeployHook,
-  triggerPagesDeployment,
+  triggerPagesViaApiWithFallback,
   waitForDeploymentSuccess,
 } from "./lib/cloudflare.mjs";
 import { acquireLock, releaseLock } from "./lib/lock.mjs";
@@ -153,38 +153,6 @@ function resolveDeployMode(configuredMode, hookUrl) {
   return hookUrl ? "hook" : "api";
 }
 
-async function triggerPagesViaApiWithFallback({
-  token,
-  accountId,
-  projectName,
-  branch,
-  hookUrl,
-  hookEnvVar,
-}) {
-  try {
-    await triggerPagesDeployment({
-      token,
-      accountId,
-      projectName,
-      branch,
-    });
-  } catch (error) {
-    if (String(error.message).includes("manifest") && hookUrl) {
-      process.stdout.write("API trigger rejected; falling back to deploy hook.\n");
-      await triggerDeployHook({ hookUrl });
-      return;
-    }
-    if (String(error.message).includes("manifest")) {
-      throw new Error(
-        `Cloudflare API rejected deployment trigger for Git-connected Pages project.\n` +
-          `Create a Pages deploy hook and set ${hookEnvVar}.\n` +
-          "Cloudflare dashboard -> Workers & Pages -> your project -> Settings -> Build & deployments -> Deploy hooks.",
-      );
-    }
-    throw error;
-  }
-}
-
 function requireFullyAutomatedDeployMode(mode) {
   if (mode === "manual") {
     throw new Error(
@@ -202,13 +170,19 @@ async function main() {
 
   const branch = await stage(
     "validation",
-    "Switch to a feature/fix/chore branch and ensure pending changes exist.",
+    "If branch is clean, no pipeline action is needed; check existing PR status. Otherwise switch to a feature/fix/chore branch and ensure pending changes exist.",
     async () => {
       setState(STATE.VALIDATING);
 
     const name = currentBranch();
     const dirty = workingTreeDirty();
-    if (!dirty) throw new Error("No local changes detected. Nothing to pipeline.");
+    if (!dirty) {
+      throw new Error(
+        `No local changes detected on branch "${name}".\n` +
+          "Pipeline processes pending local changes only.\n" +
+          "If you already pushed this branch, check the existing PR status/merge state instead of rerunning pipeline.",
+      );
+    }
 
     if (
       config.safety.blockMainBranchForNonRelease &&
@@ -474,27 +448,35 @@ async function main() {
               process.stdout.write(
                 `Deploy hook failed for ${environment}; falling back to API trigger.\n`,
               );
-              await triggerPagesViaApiWithFallback({
+              const triggerResult = await triggerPagesViaApiWithFallback({
                 token,
                 accountId,
                 projectName,
                 branch: deployBranch,
                 hookUrl,
                 hookEnvVar,
+                allowGitConnectedFallback: (config.deploy.mode ?? "manual") === "auto",
               });
+              if (!triggerResult.triggered && triggerResult.reason) {
+                process.stdout.write(`${triggerResult.reason}\n`);
+              }
             } else {
               throw error;
             }
           }
         } else if (deployMode === "api") {
-          await triggerPagesViaApiWithFallback({
+          const triggerResult = await triggerPagesViaApiWithFallback({
             token,
             accountId,
             projectName,
             branch: deployBranch,
             hookUrl,
             hookEnvVar,
+            allowGitConnectedFallback: (config.deploy.mode ?? "manual") === "auto",
           });
+          if (!triggerResult.triggered && triggerResult.reason) {
+            process.stdout.write(`${triggerResult.reason}\n`);
+          }
         } else {
           throw new Error(
             `Unknown deploy mode "${deployMode}". Valid: hook | api | auto`,
@@ -508,6 +490,7 @@ async function main() {
           projectName,
           branch: deployBranch,
           environment,
+          expectedCommitSha: targetSha,
           timeoutMs: config.deploy.timeoutMs,
           pollIntervalMs: config.deploy.pollIntervalMs,
         });
