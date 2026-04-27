@@ -154,3 +154,4 @@ When you add a custom domain, replace `https://worksmart.pages.dev` in `public/i
 ## Operational runbooks
 
 - Deploy timestamp not updating after merge: `RUNBOOK_DEPLOY_STUCK.md`
+- Branch protection required-check setup: `RUNBOOK_BRANCH_PROTECTION.md`

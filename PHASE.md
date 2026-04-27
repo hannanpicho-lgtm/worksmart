@@ -28,6 +28,6 @@ Completed in this phase:
 
 Next recommended items:
 
-1. Add branch-protection required checks list (`Quality Checks`, `Deploy Cloudflare Pages`, `Monitor Production`).
+1. ✅ Add branch-protection required checks list (`RUNBOOK_BRANCH_PROTECTION.md`).
 2. ✅ Add a one-page runbook for “deploy stuck / no new Pages timestamp” (`RUNBOOK_DEPLOY_STUCK.md`).
 3. ✅ Add rollback instructions (re-run last green deployment / revert commit fast path) in runbook.
