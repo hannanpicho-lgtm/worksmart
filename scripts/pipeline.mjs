@@ -170,13 +170,19 @@ async function main() {
 
   const branch = await stage(
     "validation",
-    "Switch to a feature/fix/chore branch and ensure pending changes exist.",
+    "If branch is clean, no pipeline action is needed; check existing PR status. Otherwise switch to a feature/fix/chore branch and ensure pending changes exist.",
     async () => {
       setState(STATE.VALIDATING);
 
     const name = currentBranch();
     const dirty = workingTreeDirty();
-    if (!dirty) throw new Error("No local changes detected. Nothing to pipeline.");
+    if (!dirty) {
+      throw new Error(
+        `No local changes detected on branch "${name}".\n` +
+          "Pipeline processes pending local changes only.\n" +
+          "If you already pushed this branch, check the existing PR status/merge state instead of rerunning pipeline.",
+      );
+    }
 
     if (
       config.safety.blockMainBranchForNonRelease &&
