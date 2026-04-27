@@ -10,6 +10,12 @@ const WORKFLOWS = [
   { id: "monitor-production.yml", label: "Monitor Production" },
 ];
 
+function parseArgs(argv) {
+  return {
+    json: argv.includes("--json"),
+  };
+}
+
 function readConfig() {
   return JSON.parse(readFileSync(resolve(process.cwd(), "pipeline.config.json"), "utf8"));
 }
@@ -65,16 +71,14 @@ function statusIcon(run) {
 }
 
 async function main() {
+  const args = parseArgs(process.argv.slice(2));
   const cfg = readConfig();
   const repo = detectRepo();
   const token = String(process.env.GITHUB_TOKEN || "").trim();
-
-  console.log("Ops status:");
   if (!repo) {
     console.error("Unable to detect GitHub repo. Set GITHUB_OWNER/GITHUB_REPO.");
     process.exit(1);
   }
-  console.log(`- repo: ${repo.owner}/${repo.repo}`);
 
   const prodUrl = String(cfg?.deploy?.productionUrl || "").trim();
   if (!prodUrl) {
@@ -82,9 +86,21 @@ async function main() {
     process.exit(1);
   }
 
+  const snapshot = {
+    repo: `${repo.owner}/${repo.repo}`,
+    checked_at: new Date().toISOString(),
+    pages: null,
+    worker_health: null,
+    workflows: [],
+  };
+
   // Live endpoint checks
   const pagesRes = await fetch(prodUrl);
-  console.log(`- pages: ${pagesRes.status} ${pagesRes.statusText} (${prodUrl})`);
+  snapshot.pages = {
+    url: prodUrl,
+    status: pagesRes.status,
+    status_text: pagesRes.statusText,
+  };
 
   const healthUrl = String(cfg?.workers?.formAnalytics?.verifyHealthUrl || "").trim();
   if (healthUrl) {
@@ -96,9 +112,16 @@ async function main() {
     } catch {
       ok = false;
     }
-    console.log(`- worker health: ${healthRes.status} ${ok ? "ok" : "not-ok"} (${healthUrl})`);
+    snapshot.worker_health = {
+      url: healthUrl,
+      status: healthRes.status,
+      ok,
+    };
   } else {
-    console.log("- worker health: skipped (verifyHealthUrl not configured)");
+    snapshot.worker_health = {
+      skipped: true,
+      reason: "verifyHealthUrl not configured",
+    };
   }
 
   // Workflow run status
@@ -110,17 +133,63 @@ async function main() {
       const data = await fetchJson(url, token);
       const run = data?.workflow_runs?.[0];
       if (!run) {
-        console.log(`- ${wf.label}: ⚪ no runs`);
+        snapshot.workflows.push({
+          id: wf.id,
+          label: wf.label,
+          available: false,
+          reason: "no runs",
+        });
         continue;
       }
       const age = ageMinutes(run.updated_at);
-      const ageText = age == null ? "age=unknown" : `age=${age.toFixed(1)}m`;
-      console.log(
-        `- ${wf.label}: ${statusIcon(run)} ${run.status}/${run.conclusion || "n/a"} ${ageText} (${run.html_url})`,
-      );
+      snapshot.workflows.push({
+        id: wf.id,
+        label: wf.label,
+        available: true,
+        status: run.status,
+        conclusion: run.conclusion || null,
+        updated_at: run.updated_at,
+        age_minutes: age == null ? null : Number(age.toFixed(1)),
+        html_url: run.html_url,
+      });
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.log(`- ${wf.label}: ⚪ unavailable (${msg})`);
+      snapshot.workflows.push({
+        id: wf.id,
+        label: wf.label,
+        available: false,
+        reason: msg,
+      });
+    }
+  }
+
+  if (args.json) {
+    console.log(JSON.stringify(snapshot, null, 2));
+    return;
+  }
+
+  console.log("Ops status:");
+  console.log(`- repo: ${snapshot.repo}`);
+  console.log(
+    `- pages: ${snapshot.pages.status} ${snapshot.pages.status_text} (${snapshot.pages.url})`,
+  );
+  if (snapshot.worker_health?.skipped) {
+    console.log(`- worker health: skipped (${snapshot.worker_health.reason})`);
+  } else {
+    console.log(
+      `- worker health: ${snapshot.worker_health.status} ${
+        snapshot.worker_health.ok ? "ok" : "not-ok"
+      } (${snapshot.worker_health.url})`,
+    );
+  }
+  for (const wf of snapshot.workflows) {
+    if (!wf.available) {
+      console.log(`- ${wf.label}: ⚪ unavailable (${wf.reason})`);
+    } else {
+      const icon =
+        wf.status !== "completed" ? "🟡" : wf.conclusion === "success" ? "🟢" : "🔴";
+      const ageText = wf.age_minutes == null ? "age=unknown" : `age=${wf.age_minutes.toFixed(1)}m`;
+      console.log(`- ${wf.label}: ${icon} ${wf.status}/${wf.conclusion || "n/a"} ${ageText} (${wf.html_url})`);
     }
   }
 }

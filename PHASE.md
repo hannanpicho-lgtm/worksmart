@@ -35,6 +35,7 @@ Goal: improve day-2 operations visibility and response speed.
 Completed in this phase:
 
 - Added `npm run ops:status` snapshot command (live Pages/Worker health + latest workflow statuses).
+- Added JSON mode (`npm run ops:status -- --json`) and incident template generator (`npm run ops:incident-template`).
 
 Next recommended items:
 

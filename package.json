@@ -25,7 +25,8 @@
     "metrics:summary": "node scripts/metrics-summary.mjs",
     "verify:telemetry": "node scripts/verify-telemetry.mjs",
     "doctor:env": "node scripts/doctor-env.mjs",
-    "ops:status": "node scripts/ops-status.mjs"
+    "ops:status": "node scripts/ops-status.mjs",
+    "ops:incident-template": "node scripts/ops-incident-template.mjs"
   },
   "devDependencies": {
     "prettier": "^3.8.3",
