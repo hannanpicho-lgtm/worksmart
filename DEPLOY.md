@@ -78,6 +78,12 @@ The workflow **Deploy Cloudflare Pages** runs automatically on **every push to `
    - `CLOUDFLARE_API_TOKEN`
    - `CLOUDFLARE_ACCOUNT_ID`
 
+Security hygiene:
+
+- Never paste tokens directly into terminal command history; store local values in `.env.pipeline`.
+- If any token is exposed in terminal/chat/screenshot, revoke it immediately and generate a replacement.
+- Rotate GitHub and Cloudflare tokens on a regular cadence (for example every 60-90 days).
+
 You can also open **Actions** → **Deploy Cloudflare Pages** → **Run workflow** to redeploy the current `main` without a new commit.
 
 Before local pipeline/deploy commands, run `npm run doctor:env` to validate required env vars and catch malformed values (account id / URLs) early.

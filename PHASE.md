@@ -52,7 +52,7 @@ Next optional items:
 1. Triage the first few Dependabot PRs: merge if Quality Checks are green, or pin versions if an upgrade breaks the pipeline.
 2. If you add a custom domain, extend `verify-prod` / `ALLOWED_ORIGINS` and document the exact origin in **DEPLOY.md** (one line in the environment section is enough).
 
-## Phase 6 — Merge Resilience (In Progress)
+## Phase 6 — Merge Resilience (Completed)
 
 Goal: prevent late pipeline failures by catching branch drift from `main` before PR merge automation.
 
@@ -61,7 +61,5 @@ Completed in this phase:
 - Added `npm run branch:check` to verify branch sync against `origin/main`.
 - Integrated branch sync validation into `npm run readiness:report` as a required check.
 - Added pipeline `--sync` mode (`npm run pipeline:sync`) to auto-sync latest base branch before PR automation.
-
-Next optional items:
-
-1. Optionally feed `sync.remote` / `sync.baseBranch` into `branch:check` so both commands use one shared source of truth.
+- Unified `branch:check` + pipeline sync target resolution to shared `sync.remote` / `sync.baseBranch` config.
+- Fixed deploy wait behavior for Git-connected Pages projects so post-merge production success is detected reliably.
