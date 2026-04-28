@@ -111,6 +111,7 @@ State flow (conceptual):
 - `npm run ops:status` — print live Pages/Worker health + latest main-branch workflow run statuses
 - `npm run ops:status -- --json` — same snapshot in machine-readable JSON
 - `npm run ops:watch` — poll post-merge status until required checks are green (pages + worker health + Quality Checks + Deploy Cloudflare Pages)
+- `npm run ops:evidence` — write timestamped ops evidence files under `logs/` (status JSON + incident template + summary pointer)
 - `npm run ops:incident-template` — generate a ready-to-fill incident report with current ops snapshot
 
 In GitHub Actions, **Monitor Production** runs every 30 minutes to execute `verify-prod` and (if configured) `verify:telemetry` against live production.
