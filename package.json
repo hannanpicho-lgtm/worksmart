@@ -9,6 +9,7 @@
     "format:check": "prettier --check \"**/*.{md,html,css,yml,yaml,json}\"",
     "test": "node scripts/run-tests.mjs",
     "content:check": "node scripts/check-content.mjs",
+    "ci:local": "npm run format:check && npm run content:check && npm test",
     "pipeline": "node scripts/pipeline.mjs",
     "pipeline:full": "node scripts/pipeline.mjs --auto-merge",
     "pipeline:sync": "node scripts/pipeline.mjs --sync",
