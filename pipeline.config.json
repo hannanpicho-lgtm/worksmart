@@ -13,6 +13,11 @@
     "required": ["npm run format:check", "npm run content:check"],
     "optionalFromNpmScripts": ["lint", "build", "test"]
   },
+  "sync": {
+    "remote": "origin",
+    "baseBranch": "main",
+    "mode": "merge"
+  },
   "deploy": {
     "enabled": true,
     "mode": "auto",

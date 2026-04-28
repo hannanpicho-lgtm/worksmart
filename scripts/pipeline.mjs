@@ -30,6 +30,7 @@ const skipDeploy = args.has("--skip-deploy");
 const skipWorkerDeploy = args.has("--skip-worker-deploy");
 const autoMerge = args.has("--auto-merge");
 const allowProtected = args.has("--allow-protected");
+const syncWithBase = args.has("--sync");
 
 const configPath = resolve(process.cwd(), "pipeline.config.json");
 const config = JSON.parse(readFileSync(configPath, "utf8"));
@@ -41,6 +42,7 @@ const runLog = {
   skipWorkerDeploy,
   autoMerge,
   allowProtected,
+  syncWithBase,
   stateTransitions: [],
   stages: [],
 };
@@ -51,6 +53,7 @@ const STATE = {
   PRECHECK: "PRECHECK",
   COMMITTING: "COMMITTING",
   PUSHING: "PUSHING",
+  SYNCING: "SYNCING",
   PR_CREATING: "PR_CREATING",
   DEPLOYING: "DEPLOYING",
   VERIFYING: "VERIFYING",
@@ -160,6 +163,17 @@ function requireFullyAutomatedDeployMode(mode) {
         'Set deploy.mode to "auto", "hook", or "api" in pipeline.config.json for fully automated runs.',
     );
   }
+}
+
+function resolveSyncTarget() {
+  const remote = config.sync?.remote ?? "origin";
+  const base = config.sync?.baseBranch ?? config.defaultBaseBranch ?? "main";
+  return { remote, base, target: `${remote}/${base}` };
+}
+
+function commitDistance(from, to) {
+  const raw = git("rev-list", "--count", `${from}..${to}`).stdout.trim();
+  return Number.parseInt(raw, 10) || 0;
 }
 
 async function main() {
@@ -282,6 +296,51 @@ async function main() {
       }
       git("push", "-u", "origin", branch);
       process.stdout.write("✔ Stage: push successful\n");
+    },
+  );
+
+  await stage(
+    "sync-base",
+    "Resolve merge/rebase conflicts, then rerun. If this branch has already been reviewed, push and refresh PR checks.",
+    async () => {
+      if (!syncWithBase) {
+        process.stdout.write("Branch sync skipped (enable with --sync).\n");
+        return;
+      }
+      setState(STATE.SYNCING);
+      printHeader("Branch Sync Stage");
+      const { remote, base, target } = resolveSyncTarget();
+      git("fetch", remote, base);
+      const behind = commitDistance("HEAD", target);
+      const ahead = commitDistance(target, "HEAD");
+      runLog.branchSync = { remote, base, target, before: { behind, ahead } };
+      process.stdout.write(`Branch sync report (${branch} vs ${target})\n`);
+      process.stdout.write(`- ahead commits: ${ahead}\n`);
+      process.stdout.write(`- behind commits: ${behind}\n`);
+
+      if (behind === 0) {
+        process.stdout.write("✔ Stage: branch already up to date\n");
+        return;
+      }
+
+      if (dryRun) {
+        process.stdout.write(`[dry-run] would sync ${behind} commit(s) from ${target}\n`);
+        return;
+      }
+
+      const mode = config.sync?.mode === "rebase" ? "rebase" : "merge";
+      process.stdout.write(`Sync mode: ${mode}\n`);
+      if (mode === "rebase") {
+        git("rebase", target);
+      } else {
+        git("merge", "--no-edit", target);
+      }
+      git("push", "origin", branch);
+
+      const behindAfter = commitDistance("HEAD", target);
+      const aheadAfter = commitDistance(target, "HEAD");
+      runLog.branchSync.after = { behind: behindAfter, ahead: aheadAfter, mode };
+      process.stdout.write("✔ Stage: branch sync completed and pushed\n");
     },
   );
 

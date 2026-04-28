@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 import { spawnSync } from "node:child_process";
+import { existsSync, readFileSync } from "node:fs";
+import { resolve } from "node:path";
 
 function runGit(args) {
   const result = spawnSync("git", args, {
@@ -14,9 +16,27 @@ function runGit(args) {
   return String(result.stdout || "").trim();
 }
 
+function loadPipelineSyncConfig() {
+  const cfgPath = resolve(process.cwd(), "pipeline.config.json");
+  if (!existsSync(cfgPath)) {
+    return {};
+  }
+
+  try {
+    const parsed = JSON.parse(readFileSync(cfgPath, "utf8"));
+    return {
+      baseBranch: parsed?.sync?.baseBranch ?? parsed?.defaultBaseBranch,
+      remote: parsed?.sync?.remote,
+    };
+  } catch {
+    return {};
+  }
+}
+
 function main() {
-  const base = process.env.PIPELINE_BASE_BRANCH || "main";
-  const remote = process.env.PIPELINE_REMOTE || "origin";
+  const fromConfig = loadPipelineSyncConfig();
+  const base = process.env.PIPELINE_BASE_BRANCH || fromConfig.baseBranch || "main";
+  const remote = process.env.PIPELINE_REMOTE || fromConfig.remote || "origin";
   const target = `${remote}/${base}`;
 
   try {
