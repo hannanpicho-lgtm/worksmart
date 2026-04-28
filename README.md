@@ -29,6 +29,14 @@
 - Guided ship command: `npm run ship`
 - Quick non-interactive ship: `npm run ship:quick`
 
+## Daily operator flow (fast path)
+
+- Edit files on a feature/docs branch
+- Run `npm run readiness:report`
+- Run `npm run pipeline:sync`
+- Wait for `Pipeline SUCCESS` and keep the printed PR URL for traceability
+- Optionally run `npm run ops:status` to confirm post-deploy health snapshot
+
 ## Local release copilot
 
 Use `npm run ship` to automate local checks + push flow without GitHub Actions:
