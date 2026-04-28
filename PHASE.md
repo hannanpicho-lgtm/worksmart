@@ -123,3 +123,13 @@ Completed in this phase:
 - Added `npm run release:notes` (backed by `scripts/release-notes.mjs`) to generate markdown release notes.
 - Supports `--from=<ref> --to=<ref>` ranges and `--limit=<n>` for latest-commit summaries.
 - Groups commit subjects into operator-friendly sections (features, fixes, docs, refactors, tests, CI, chores, other).
+
+## Phase 13 — Release Bundle Packaging (Completed)
+
+Goal: capture release communication and incident evidence together in one command.
+
+Completed in this phase:
+
+- Added `npm run release:bundle` (backed by `scripts/release-bundle.mjs`).
+- Produces timestamped bundle artifacts under `logs/`: release notes, ops status JSON, incident template, plus a summary pointer file.
+- Supports release-note range flags (`--from`, `--to`, `--limit`) so bundle scope matches the intended release window.
