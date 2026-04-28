@@ -562,13 +562,14 @@ async function main() {
           );
         }
 
+        const expectedCommitSha = usedGitConnectedFallback ? null : targetSha;
         const deployment = await waitForDeploymentSuccess({
           token,
           accountId,
           projectName,
           branch: deployBranch,
           environment,
-          expectedCommitSha: targetSha,
+          expectedCommitSha,
           timeoutMs: effectiveTimeoutMs,
           pollIntervalMs: config.deploy.pollIntervalMs,
         });
