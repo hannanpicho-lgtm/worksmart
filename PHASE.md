@@ -93,3 +93,13 @@ Completed in this phase:
 - Added `npm run ci:local` as the single canonical local CI gate command.
 - Updated `Quality Checks` workflow to execute `npm run ci:local` after dependency install.
 - Updated `Nightly Stability` workflow to execute the same `npm run ci:local` command.
+
+## Phase 10 — Post-Merge Green Watch (Completed)
+
+Goal: remove manual polling after merges and make stabilization checks repeatable.
+
+Completed in this phase:
+
+- Added `npm run ops:watch` to poll `ops:status --json` until core post-merge checks are green.
+- Wired `ops:watch` to gate on Pages health, Worker health, and workflow success (`Quality Checks`, `Deploy Cloudflare Pages`).
+- Documented `ops:watch` in the command reference for operators.

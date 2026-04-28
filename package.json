@@ -30,6 +30,7 @@
     "branch:check": "node scripts/branch-check.mjs",
     "readiness:report": "node scripts/readiness-report.mjs",
     "ops:status": "node scripts/ops-status.mjs",
+    "ops:watch": "node scripts/ops-watch.mjs",
     "ops:incident-template": "node scripts/ops-incident-template.mjs"
   },
   "devDependencies": {
