@@ -73,3 +73,13 @@ Completed in this phase:
 - Restored green `Quality Checks` by fixing workflow lint execution and CI test invocation portability.
 - Standardized day-to-day release flow around `npm run readiness:report` -> `npm run pipeline:sync`.
 - Added explicit token hygiene guidance (rotation + revoke-on-exposure) to deployment docs.
+
+## Phase 8 — Continuous Stability Watch (Completed)
+
+Goal: catch dependency or runtime drift early, even during inactive periods.
+
+Completed in this phase:
+
+- Added scheduled `Nightly Stability` GitHub Actions workflow (`.github/workflows/nightly-stability.yml`).
+- Runs deterministic checks each night (`format:check`, `content:check`, `test`) on `main`.
+- Supports manual `workflow_dispatch` so operators can run the same stability suite on demand.
