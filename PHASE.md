@@ -83,3 +83,13 @@ Completed in this phase:
 - Added scheduled `Nightly Stability` GitHub Actions workflow (`.github/workflows/nightly-stability.yml`).
 - Runs deterministic checks each night (`format:check`, `content:check`, `test`) on `main`.
 - Supports manual `workflow_dispatch` so operators can run the same stability suite on demand.
+
+## Phase 9 — CI Command Unification (Completed)
+
+Goal: reduce drift between local preflight checks and GitHub workflow behavior.
+
+Completed in this phase:
+
+- Added `npm run ci:local` as the single canonical local CI gate command.
+- Updated `Quality Checks` workflow to execute `npm run ci:local` after dependency install.
+- Updated `Nightly Stability` workflow to execute the same `npm run ci:local` command.

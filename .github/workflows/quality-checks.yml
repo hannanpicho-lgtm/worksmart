@@ -21,14 +21,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Check formatting
-        run: npm run format:check
-
-      - name: Check content
-        run: npm run content:check
-
-      - name: Test
-        run: npm test
+      - name: Run local CI suite
+        run: npm run ci:local
 
   workflow-lint:
     runs-on: ubuntu-latest
