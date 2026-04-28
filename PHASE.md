@@ -63,3 +63,13 @@ Completed in this phase:
 - Added pipeline `--sync` mode (`npm run pipeline:sync`) to auto-sync latest base branch before PR automation.
 - Unified `branch:check` + pipeline sync target resolution to shared `sync.remote` / `sync.baseBranch` config.
 - Fixed deploy wait behavior for Git-connected Pages projects so post-merge production success is detected reliably.
+
+## Phase 7 — Operational Steady State (Completed)
+
+Goal: lock the project into a low-friction, repeatable release path.
+
+Completed in this phase:
+
+- Restored green `Quality Checks` by fixing workflow lint execution and CI test invocation portability.
+- Standardized day-to-day release flow around `npm run readiness:report` -> `npm run pipeline:sync`.
+- Added explicit token hygiene guidance (rotation + revoke-on-exposure) to deployment docs.
