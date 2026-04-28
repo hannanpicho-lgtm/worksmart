@@ -101,6 +101,7 @@ State flow (conceptual):
 - `npm run pipeline:release` — release mode (`--release --auto-merge`)
 - `npm run deploy:prod` — optional direct trigger path for production deploy + marker verification
 - `npm run deploy:preview` — optional direct trigger path for preview deploy
+- `npm run release:notes -- --from=<ref> --to=<ref>` — generate markdown release notes grouped by commit type (or latest commits via `--limit=<n>`)
 - `npm run verify:prod` — verify live production markers (and optional Worker `/health` if set in `pipeline.config.json`); **Deploy Cloudflare Pages** runs this after publish
 - `npm run optimize:og` — resize `public/og-image.png` to 1200×630 if needed and recompress (run after replacing OG art)
 - `npm run metrics:summary -- --days=7` — fetch Worker `/metrics-summary` using `FORM_ANALYTICS_WORKER_URL` + `ANALYTICS_INGEST_SECRET`
