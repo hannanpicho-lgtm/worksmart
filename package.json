@@ -11,6 +11,7 @@
     "content:check": "node scripts/check-content.mjs",
     "pipeline": "node scripts/pipeline.mjs",
     "pipeline:full": "node scripts/pipeline.mjs --auto-merge",
+    "pipeline:sync": "node scripts/pipeline.mjs --sync",
     "pipeline:dry": "node scripts/pipeline.mjs --dry-run",
     "pipeline:release": "node scripts/pipeline.mjs --release --auto-merge",
     "deploy:prod": "node scripts/deploy-pages.mjs --env production",

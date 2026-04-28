@@ -88,6 +88,7 @@ State flow (conceptual):
 
 - `npm run pipeline` — default fully automated pipeline (auto-merge enabled in config)
 - `npm run pipeline:full` — fully automated path (includes `--auto-merge`)
+- `npm run pipeline:sync` — pipeline plus branch auto-sync with `origin/main` before PR stage
 - `npm run pipeline:dry` — dry run (no commit/push/deploy/Worker deploy)
 - `npm run pipeline:release` — release mode (`--release --auto-merge`)
 - `npm run deploy:prod` — optional direct trigger path for production deploy + marker verification
@@ -109,6 +110,7 @@ Flags (fatigue reducers / escape hatches):
 
 - `--skip-deploy` — skip Cloudflare **Pages** deploy + verify stages only
 - `--skip-worker-deploy` — skip the optional **Worker** deploy stage even when `workers/form-analytics/` changed
+- `--sync` — fetch and sync latest base branch (`sync.remote` + `sync.baseBranch`) before PR automation
 
 ### Git-first deploy mode (recommended on blocked networks)
 

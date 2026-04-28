@@ -60,8 +60,8 @@ Completed in this phase:
 
 - Added `npm run branch:check` to verify branch sync against `origin/main`.
 - Integrated branch sync validation into `npm run readiness:report` as a required check.
+- Added pipeline `--sync` mode (`npm run pipeline:sync`) to auto-sync latest base branch before PR automation.
 
 Next optional items:
 
-1. Add a `pipeline --sync` mode that auto-merges/rebases latest `main` before pipeline stages.
-2. Optionally expose the base branch/remote in `pipeline.config.json` and feed into `branch:check`.
+1. Optionally feed `sync.remote` / `sync.baseBranch` into `branch:check` so both commands use one shared source of truth.

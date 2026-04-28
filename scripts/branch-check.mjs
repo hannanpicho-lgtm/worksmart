@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { spawnSync } from "node:child_process";
+import { resolveSyncTarget } from "./lib/sync-config.mjs";
 
 function runGit(args) {
   const result = spawnSync("git", args, {
@@ -15,8 +16,9 @@ function runGit(args) {
 }
 
 function main() {
-  const base = process.env.PIPELINE_BASE_BRANCH || "main";
-  const remote = process.env.PIPELINE_REMOTE || "origin";
+  const fromConfig = resolveSyncTarget();
+  const base = process.env.PIPELINE_BASE_BRANCH || fromConfig.base || "main";
+  const remote = process.env.PIPELINE_REMOTE || fromConfig.remote || "origin";
   const target = `${remote}/${base}`;
 
   try {
