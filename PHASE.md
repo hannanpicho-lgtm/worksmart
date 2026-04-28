@@ -103,3 +103,13 @@ Completed in this phase:
 - Added `npm run ops:watch` to poll `ops:status --json` until core post-merge checks are green.
 - Wired `ops:watch` to gate on Pages health, Worker health, and workflow success (`Quality Checks`, `Deploy Cloudflare Pages`).
 - Documented `ops:watch` in the command reference for operators.
+
+## Phase 11 — Evidence Archival (Completed)
+
+Goal: preserve a repeatable incident evidence bundle for postmortems and handoffs.
+
+Completed in this phase:
+
+- Added `npm run ops:evidence` to capture timestamped evidence under `logs/`.
+- Stores three artifacts per run: ops status JSON, incident template markdown, and a short summary pointer file.
+- Documented the command in the operator command reference.
