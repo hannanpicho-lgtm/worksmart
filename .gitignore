@@ -11,3 +11,4 @@ dist/
 coverage/
 logs/
 .pipeline.lock
+.vscode/

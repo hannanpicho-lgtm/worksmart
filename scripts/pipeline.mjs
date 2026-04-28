@@ -3,6 +3,8 @@
 import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { runShell } from "./lib/exec.mjs";
+import { loadEnvFile } from "./lib/env-file.mjs";
+import { resolveSyncTarget } from "./lib/sync-config.mjs";
 import {
   changedFiles,
   currentBranch,
@@ -31,6 +33,18 @@ const skipWorkerDeploy = args.has("--skip-worker-deploy");
 const autoMerge = args.has("--auto-merge");
 const allowProtected = args.has("--allow-protected");
 const syncWithBase = args.has("--sync");
+const envFileArg = [...args].find((arg) => arg.startsWith("--env-file="));
+const envFilePath = envFileArg ? envFileArg.slice("--env-file=".length) : ".env.pipeline";
+const skipEnvFileLoad = args.has("--no-env-file");
+
+if (!skipEnvFileLoad) {
+  const envLoad = loadEnvFile(envFilePath);
+  if (envLoad.found) {
+    process.stdout.write(`Loaded ${envLoad.loaded} env value(s) from ${envFilePath}\n`);
+  } else {
+    process.stdout.write(`Env file not found: ${envFilePath} (continuing with current shell env)\n`);
+  }
+}
 
 const configPath = resolve(process.cwd(), "pipeline.config.json");
 const config = JSON.parse(readFileSync(configPath, "utf8"));
@@ -163,12 +177,6 @@ function requireFullyAutomatedDeployMode(mode) {
         'Set deploy.mode to "auto", "hook", or "api" in pipeline.config.json for fully automated runs.',
     );
   }
-}
-
-function resolveSyncTarget() {
-  const remote = config.sync?.remote ?? "origin";
-  const base = config.sync?.baseBranch ?? config.defaultBaseBranch ?? "main";
-  return { remote, base, target: `${remote}/${base}` };
 }
 
 function commitDistance(from, to) {
