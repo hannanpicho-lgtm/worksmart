@@ -113,3 +113,13 @@ Completed in this phase:
 - Added `npm run ops:evidence` to capture timestamped evidence under `logs/`.
 - Stores three artifacts per run: ops status JSON, incident template markdown, and a short summary pointer file.
 - Documented the command in the operator command reference.
+
+## Phase 12 — Release Notes Automation (Completed)
+
+Goal: make release communication reproducible from git history with one command.
+
+Completed in this phase:
+
+- Added `npm run release:notes` (backed by `scripts/release-notes.mjs`) to generate markdown release notes.
+- Supports `--from=<ref> --to=<ref>` ranges and `--limit=<n>` for latest-commit summaries.
+- Groups commit subjects into operator-friendly sections (features, fixes, docs, refactors, tests, CI, chores, other).
