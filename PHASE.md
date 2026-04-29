@@ -253,3 +253,13 @@ Completed in this phase:
 - Enhanced `phase:autopilot` default next-branch naming to parse `PHASE.md` and infer the next `Phase N` value.
 - `--start-next` now auto-generates branch names like `phase/<nextPhase>-<timestamp>` when `--next-name` is not provided.
 - Keeps timestamp-only fallback when phase parsing is unavailable, preserving robustness.
+
+## Phase 26 — Collision-Safe Phase Branch Start (Completed)
+
+Goal: make phase branch creation resilient when default or requested branch names already exist locally or remotely.
+
+Completed in this phase:
+
+- Enhanced `phase:start` default naming to infer next `Phase N` from `PHASE.md` and produce `phase/<nextPhase>-<timestamp>`.
+- Added collision-safe behavior (`--ensure-unique`, enabled by default) that appends numeric suffixes when branch names already exist.
+- Added strict-mode escape hatch (`--no-ensure-unique`) for operators who want fast-fail behavior on existing names.
