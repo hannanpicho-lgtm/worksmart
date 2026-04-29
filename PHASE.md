@@ -283,3 +283,13 @@ Completed in this phase:
 - Added `--cluster-all` to `phase:autopilot`, which automatically enables `--cluster-release` and `--start-next`.
 - Added guardrail so `--no-merge` cannot be combined with `--cluster-release`/`--start-next` in non-dry runs.
 - Documented the one-go preset in README so operators can run full clustered closeout with a shorter command.
+
+## Phase 29 — Dry-Run Order Fidelity (Completed)
+
+Goal: make autopilot dry-run output reflect the exact execution sequence so operators can trust previews.
+
+Completed in this phase:
+
+- Updated `phase:autopilot` dry-run ordering to match real non-dry flow.
+- Dry-run steps now appear as: `ops:watch` -> `release:finalize` -> `phase:start` when all are enabled.
+- Preserved all existing flags and execution behavior; only preview ordering changed.
