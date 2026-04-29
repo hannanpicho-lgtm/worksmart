@@ -223,3 +223,13 @@ Completed in this phase:
 - Added `npm run phase:status` (backed by `scripts/phase-status.mjs`).
 - Summarizes readiness outcome plus release-latest health status in compact output for quick operator decisions.
 - Supports `--full` mode to print underlying `readiness-report` and `release-latest` outputs for deeper debugging.
+
+## Phase 23 — Guarded Autopilot Closeout (Completed)
+
+Goal: prevent accidental low-readiness merges by enforcing a phase-status gate before automated closeout.
+
+Completed in this phase:
+
+- Added `npm run phase:autopilot` (backed by `scripts/phase-autopilot.mjs`).
+- Runs `phase:status` first and only proceeds to `phase:complete` when required readiness checks pass (unless `--force` is set).
+- Supports operator controls (`--skip-test`, `--no-merge`, `--full-status`, `--dry-run`) while keeping one-command closeout behavior.
