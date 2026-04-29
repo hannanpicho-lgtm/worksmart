@@ -173,3 +173,13 @@ Completed in this phase:
 - Added `npm run release:finalize` (backed by `scripts/release-finalize.mjs`).
 - Orchestrates `release:closeout` and `release:handoff` so closeout checks and handoff artifact generation run in one pass.
 - Supports the same release scope and watch timing flags as `release:closeout`, including `--skip-watch` for quick local dry runs.
+
+## Phase 18 — Quick Latest-Release Snapshot (Completed)
+
+Goal: let operators retrieve a concise release status and artifact-pointer snapshot instantly during handoff or incident checks.
+
+Completed in this phase:
+
+- Added `npm run release:latest` (backed by `scripts/release-latest.mjs`).
+- Prints live Pages/Worker/workflow statuses and points to latest handoff + bundle artifacts in one compact output.
+- Reuses existing `ops:status` and release index artifacts to avoid duplicate logic.
