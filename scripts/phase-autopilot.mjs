@@ -13,6 +13,11 @@ function parseArgs(argv) {
     force: false,
     fullStatus: false,
     dryRun: false,
+    skipWatch: false,
+    watchTimeoutMs: "600000",
+    watchIntervalMs: "15000",
+    startNext: false,
+    nextName: "",
   };
   for (const raw of argv) {
     if (!raw.startsWith("--")) continue;
@@ -26,8 +31,23 @@ function parseArgs(argv) {
     if (k === "force") out.force = true;
     if (k === "full-status") out.fullStatus = true;
     if (k === "dry-run") out.dryRun = true;
+    if (k === "skip-watch") out.skipWatch = true;
+    if (k === "watch-timeout-ms" && v) out.watchTimeoutMs = v;
+    if (k === "watch-interval-ms" && v) out.watchIntervalMs = v;
+    if (k === "start-next") out.startNext = true;
+    if (k === "next-name" && v) out.nextName = v;
   }
   return out;
+}
+
+function defaultNextBranchName() {
+  const d = new Date();
+  const yyyy = d.getUTCFullYear();
+  const mm = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const dd = String(d.getUTCDate()).padStart(2, "0");
+  const hh = String(d.getUTCHours()).padStart(2, "0");
+  const mi = String(d.getUTCMinutes()).padStart(2, "0");
+  return `phase/${yyyy}${mm}${dd}-${hh}${mi}-next`;
 }
 
 function runNodeScript(scriptPath, args = []) {
@@ -55,6 +75,9 @@ function main() {
 
   if (!args.message) {
     throw new Error("Missing commit message. Use --message=<text>.");
+  }
+  if (args.startNext && args.noMerge && !args.dryRun) {
+    throw new Error("Cannot use --start-next together with --no-merge in non-dry runs.");
   }
 
   const statusArgs = [];
@@ -85,6 +108,55 @@ function main() {
   printOutput(completeResult);
   if ((completeResult.status ?? 1) !== 0) {
     throw new Error("phase:complete failed.");
+  }
+
+  if (args.dryRun) {
+    if (!args.noMerge && !args.skipWatch) {
+      process.stdout.write(
+        `[phase:autopilot] dry-run next step: npm run ops:watch -- --timeout-ms=${args.watchTimeoutMs} --interval-ms=${args.watchIntervalMs}\n`,
+      );
+    }
+    if (args.startNext) {
+      const branchName = args.nextName || defaultNextBranchName();
+      process.stdout.write(
+        `[phase:autopilot] dry-run next step: npm run phase:start -- --name=${branchName} --remote=${args.remote} --base=${args.base}\n`,
+      );
+    }
+    return;
+  }
+
+  if (args.noMerge) {
+    return;
+  }
+
+  if (!args.skipWatch) {
+    const watchResult = runNpm([
+      "run",
+      "ops:watch",
+      "--",
+      `--timeout-ms=${args.watchTimeoutMs}`,
+      `--interval-ms=${args.watchIntervalMs}`,
+    ]);
+    printOutput(watchResult);
+    if ((watchResult.status ?? 1) !== 0) {
+      throw new Error("ops:watch failed after phase closeout.");
+    }
+  }
+
+  if (args.startNext) {
+    const branchName = args.nextName || defaultNextBranchName();
+    const nextResult = runNpm([
+      "run",
+      "phase:start",
+      "--",
+      `--name=${branchName}`,
+      `--remote=${args.remote}`,
+      `--base=${args.base}`,
+    ]);
+    printOutput(nextResult);
+    if ((nextResult.status ?? 1) !== 0) {
+      throw new Error("phase:start failed while creating next phase branch.");
+    }
   }
 }
 
