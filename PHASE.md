@@ -213,3 +213,13 @@ Completed in this phase:
 - Added `npm run phase:complete` (backed by `scripts/phase-complete.mjs`).
 - Executes optional test run, commit (if changes exist), push, then delegates to `pr:sync-merge` for sync + PR upsert/merge.
 - Supports `--dry-run`, `--skip-test`, and `--no-merge` for safe preview and operator control.
+
+## Phase 22 — Pre-Ship Phase Snapshot (Completed)
+
+Goal: provide a fast go/no-go signal before phase closeout by combining readiness and latest release state in one command.
+
+Completed in this phase:
+
+- Added `npm run phase:status` (backed by `scripts/phase-status.mjs`).
+- Summarizes readiness outcome plus release-latest health status in compact output for quick operator decisions.
+- Supports `--full` mode to print underlying `readiness-report` and `release-latest` outputs for deeper debugging.

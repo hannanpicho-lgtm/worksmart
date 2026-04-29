@@ -26,6 +26,7 @@
     "ship:open": "node scripts/ship.mjs --open",
     "phase:start": "node scripts/phase-start.mjs",
     "phase:complete": "node scripts/phase-complete.mjs",
+    "phase:status": "node scripts/phase-status.mjs",
     "pr:sync-merge": "node scripts/pr-sync-merge.mjs",
     "release:notes": "node scripts/release-notes.mjs",
     "release:bundle": "node scripts/release-bundle.mjs",
