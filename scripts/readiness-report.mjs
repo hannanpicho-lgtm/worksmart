@@ -4,7 +4,9 @@ import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-const cliArgs = new Set(process.argv.slice(2));
+const rawArgv = process.argv.slice(2);
+const releaseMode = rawArgv.includes("--release");
+const cliArgs = new Set(rawArgv.filter((arg) => arg !== "--release"));
 
 function stripOptionalQuotes(value) {
   if (
@@ -89,16 +91,19 @@ function checkGitState() {
     .map((line) => line.trim())
     .filter(Boolean).length;
   const protectedBranch = branch === "main" || branch === "master";
-  // Feature branches should pass whether the tree is clean or dirty: a clean tree is valid when
-  // the branch is synced and everything is committed; requiring pending changes was a false red.
-  const ok = !protectedBranch;
+  // Feature branches pass whether clean or dirty. main/master pass only in --release mode
+  // (explicit production / release go-no-go); otherwise they stay protected like pipeline rules.
+  const ok = !protectedBranch || releaseMode;
+  let branchTag = "";
+  if (protectedBranch) {
+    branchTag = releaseMode
+      ? " (release mode: protected branch allowed)"
+      : " (protected for non-release runs)";
+  }
 
   return {
     ok,
-    details: [
-      `branch: ${branch}${protectedBranch ? " (protected for non-release runs)" : ""}`,
-      `pending changes: ${changedCount}`,
-    ].join("\n"),
+    details: [`branch: ${branch}${branchTag}`, `pending changes: ${changedCount}`].join("\n"),
   };
 }
 
@@ -144,6 +149,9 @@ checks.push(
 );
 
 console.log("Readiness report");
+if (releaseMode) {
+  console.log("Mode: release (--release) — main/master allowed for git readiness");
+}
 console.log("================");
 
 for (const check of checks) {
