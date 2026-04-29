@@ -163,3 +163,13 @@ Completed in this phase:
 - Added `npm run release:handoff` (backed by `scripts/release-handoff.mjs`).
 - Auto-loads `.env.pipeline`, captures live `ops:status --json`, and includes latest bundle references from `release-index.json`.
 - Writes timestamped markdown handoff snapshots under `logs/` for copy/paste incident or release updates.
+
+## Phase 17 — One-Command Release Finalization (Completed)
+
+Goal: compress post-release operator steps into a single command that captures evidence, verifies post-merge health, and emits a handoff-ready snapshot.
+
+Completed in this phase:
+
+- Added `npm run release:finalize` (backed by `scripts/release-finalize.mjs`).
+- Orchestrates `release:closeout` and `release:handoff` so closeout checks and handoff artifact generation run in one pass.
+- Supports the same release scope and watch timing flags as `release:closeout`, including `--skip-watch` for quick local dry runs.
