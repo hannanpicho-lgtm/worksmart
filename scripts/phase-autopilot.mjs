@@ -21,6 +21,7 @@ function parseArgs(argv) {
     startNext: false,
     nextName: "",
     clusterRelease: false,
+    clusterAll: false,
     releaseFrom: "",
     releaseTo: "",
     releaseLimit: "",
@@ -44,6 +45,7 @@ function parseArgs(argv) {
     if (k === "start-next") out.startNext = true;
     if (k === "next-name" && v) out.nextName = v;
     if (k === "cluster-release") out.clusterRelease = true;
+    if (k === "cluster-all") out.clusterAll = true;
     if (k === "release-from" && v) out.releaseFrom = v;
     if (k === "release-to" && v) out.releaseTo = v;
     if (k === "release-limit" && v) out.releaseLimit = v;
@@ -101,12 +103,18 @@ function printOutput(result) {
 
 function main() {
   const args = parseArgs(process.argv.slice(2));
+  if (args.clusterAll) {
+    args.clusterRelease = true;
+    args.startNext = true;
+  }
 
   if (!args.message) {
     throw new Error("Missing commit message. Use --message=<text>.");
   }
-  if (args.startNext && args.noMerge && !args.dryRun) {
-    throw new Error("Cannot use --start-next together with --no-merge in non-dry runs.");
+  if ((args.startNext || args.clusterRelease) && args.noMerge && !args.dryRun) {
+    throw new Error(
+      "Cannot use --no-merge with --start-next/--cluster-release in non-dry runs.",
+    );
   }
 
   const statusArgs = [];

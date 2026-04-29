@@ -273,3 +273,13 @@ Completed in this phase:
 - Enhanced `phase:autopilot` with `--cluster-release` to run `release:finalize` inside the same closeout flow.
 - Added release passthrough controls (`--release-from`, `--release-to`, `--release-limit`, `--release-skip-watch`) for scoped or faster evidence runs.
 - Added dry-run preview lines so clustered release steps are fully visible before execution.
+
+## Phase 28 — Cluster-All Preset (Completed)
+
+Goal: reduce operator command length for full closeout by providing a single preset that bundles clustered release and next-phase bootstrap.
+
+Completed in this phase:
+
+- Added `--cluster-all` to `phase:autopilot`, which automatically enables `--cluster-release` and `--start-next`.
+- Added guardrail so `--no-merge` cannot be combined with `--cluster-release`/`--start-next` in non-dry runs.
+- Documented the one-go preset in README so operators can run full clustered closeout with a shorter command.
