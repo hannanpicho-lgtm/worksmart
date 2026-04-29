@@ -183,3 +183,13 @@ Completed in this phase:
 - Added `npm run release:latest` (backed by `scripts/release-latest.mjs`).
 - Prints live Pages/Worker/workflow statuses and points to latest handoff + bundle artifacts in one compact output.
 - Reuses existing `ops:status` and release index artifacts to avoid duplicate logic.
+
+## Phase 19 — Branch Fresh-Start Automation (Completed)
+
+Goal: reduce recurring merge-conflict overhead by making it easy to start each phase from an up-to-date `origin/main` branch point.
+
+Completed in this phase:
+
+- Added `npm run phase:start` (backed by `scripts/phase-start.mjs`).
+- Fetches latest base branch, validates clean working tree, and creates a new phase branch from `<remote>/<base>`.
+- Supports `--name`, `--remote`, `--base`, and `--dry-run` for safe preview before branch creation.

@@ -53,6 +53,10 @@ Useful flags:
 - `node scripts/ship.mjs --no-check` skips formatting check (only when needed)
 - `node scripts/ship.mjs --allow-main` allows shipping from `main` (not recommended)
 
+High-impact branch hygiene helper:
+
+- `npm run phase:start -- --name=phase/<label>` — create a clean phase branch from latest `origin/main` (fails fast on dirty trees; supports `--dry-run`)
+
 ## Deterministic local pipeline (GitHub Actions replacement)
 
 ### Why this exists (the “two layers” you wanted)
