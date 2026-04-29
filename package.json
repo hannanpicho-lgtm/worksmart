@@ -36,6 +36,7 @@
     "release:handoff": "node scripts/release-handoff.mjs",
     "release:finalize": "node scripts/release-finalize.mjs",
     "release:latest": "node scripts/release-latest.mjs",
+    "release:go-live": "node scripts/release-go-live.mjs",
     "metrics:summary": "node scripts/metrics-summary.mjs",
     "verify:telemetry": "node scripts/verify-telemetry.mjs",
     "doctor:env": "node scripts/doctor-env.mjs",
