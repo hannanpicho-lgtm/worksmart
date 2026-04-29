@@ -55,7 +55,7 @@ Useful flags:
 
 High-impact branch hygiene helper:
 
-- `npm run phase:start -- --name=phase/<label>` — create a clean phase branch from latest `origin/main` (fails fast on dirty trees; supports `--dry-run`)
+- `npm run phase:start -- --name=phase/<label>` — create a clean phase branch from latest `origin/main` (phase-aware default names, auto-unique suffixing, supports `--dry-run` and `--no-ensure-unique`)
 - `npm run phase:status` — print one-line readiness + release-latest snapshot so you can decide ship/fix quickly (`--full` to include underlying command output)
 - `npm run phase:complete -- --message=\"chore: ...\"` — run tests, commit, push, then invoke `pr:sync-merge` in one closeout flow (`--dry-run`, `--skip-test`, `--no-merge`)
 - `npm run phase:autopilot -- --message=\"chore: ...\"` — gate on `phase:status`, run `phase:complete`, optionally wait post-merge green, and optionally start the next fresh branch (`--force`, `--skip-watch`, `--start-next`; auto-names next branch using next `Phase N` in `PHASE.md`)
