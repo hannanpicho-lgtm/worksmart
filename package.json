@@ -4,7 +4,7 @@
   "private": true,
   "description": "WorkSmart static site (Cloudflare Pages → public/)",
   "scripts": {
-    "dev": "npx --yes serve public -l 4173",
+    "dev": "npx --yes serve -p 4173 --no-port-switching public",
     "format": "prettier --write \"**/*.{md,html,css,yml,yaml,json}\"",
     "format:check": "prettier --check \"**/*.{md,html,css,yml,yaml,json}\"",
     "test": "node scripts/run-tests.mjs",
