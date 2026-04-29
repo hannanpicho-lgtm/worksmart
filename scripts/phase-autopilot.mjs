@@ -153,12 +153,6 @@ function main() {
         `[phase:autopilot] dry-run next step: npm run ops:watch -- --timeout-ms=${args.watchTimeoutMs} --interval-ms=${args.watchIntervalMs}\n`,
       );
     }
-    if (args.startNext) {
-      const branchName = args.nextName || defaultNextBranchName();
-      process.stdout.write(
-        `[phase:autopilot] dry-run next step: npm run phase:start -- --name=${branchName} --remote=${args.remote} --base=${args.base}\n`,
-      );
-    }
     if (args.clusterRelease) {
       const releaseArgs = [];
       if (args.releaseFrom) releaseArgs.push(`--from=${args.releaseFrom}`);
@@ -168,6 +162,12 @@ function main() {
       const suffix = releaseArgs.length ? ` -- ${releaseArgs.join(" ")}` : "";
       process.stdout.write(
         `[phase:autopilot] dry-run next step: npm run release:finalize${suffix}\n`,
+      );
+    }
+    if (args.startNext) {
+      const branchName = args.nextName || defaultNextBranchName();
+      process.stdout.write(
+        `[phase:autopilot] dry-run next step: npm run phase:start -- --name=${branchName} --remote=${args.remote} --base=${args.base}\n`,
       );
     }
     return;
