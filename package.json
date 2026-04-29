@@ -29,6 +29,7 @@
     "release:closeout": "node scripts/release-closeout.mjs",
     "release:index": "node scripts/release-index.mjs",
     "release:handoff": "node scripts/release-handoff.mjs",
+    "release:finalize": "node scripts/release-finalize.mjs",
     "metrics:summary": "node scripts/metrics-summary.mjs",
     "verify:telemetry": "node scripts/verify-telemetry.mjs",
     "doctor:env": "node scripts/doctor-env.mjs",
