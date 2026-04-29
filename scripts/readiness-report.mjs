@@ -89,9 +89,12 @@ function checkGitState() {
     .map((line) => line.trim())
     .filter(Boolean).length;
   const protectedBranch = branch === "main" || branch === "master";
+  // Feature branches should pass whether the tree is clean or dirty: a clean tree is valid when
+  // the branch is synced and everything is committed; requiring pending changes was a false red.
+  const ok = !protectedBranch;
 
   return {
-    ok: !protectedBranch && changedCount > 0,
+    ok,
     details: [
       `branch: ${branch}${protectedBranch ? " (protected for non-release runs)" : ""}`,
       `pending changes: ${changedCount}`,
