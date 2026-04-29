@@ -263,3 +263,13 @@ Completed in this phase:
 - Enhanced `phase:start` default naming to infer next `Phase N` from `PHASE.md` and produce `phase/<nextPhase>-<timestamp>`.
 - Added collision-safe behavior (`--ensure-unique`, enabled by default) that appends numeric suffixes when branch names already exist.
 - Added strict-mode escape hatch (`--no-ensure-unique`) for operators who want fast-fail behavior on existing names.
+
+## Phase 27 — Clustered One-Go Closeout (Completed)
+
+Goal: allow operators to ship and package release evidence in one autopilot pass instead of separate commands.
+
+Completed in this phase:
+
+- Enhanced `phase:autopilot` with `--cluster-release` to run `release:finalize` inside the same closeout flow.
+- Added release passthrough controls (`--release-from`, `--release-to`, `--release-limit`, `--release-skip-watch`) for scoped or faster evidence runs.
+- Added dry-run preview lines so clustered release steps are fully visible before execution.

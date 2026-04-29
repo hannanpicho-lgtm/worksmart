@@ -20,6 +20,11 @@ function parseArgs(argv) {
     watchIntervalMs: "15000",
     startNext: false,
     nextName: "",
+    clusterRelease: false,
+    releaseFrom: "",
+    releaseTo: "",
+    releaseLimit: "",
+    releaseSkipWatch: false,
   };
   for (const raw of argv) {
     if (!raw.startsWith("--")) continue;
@@ -38,6 +43,11 @@ function parseArgs(argv) {
     if (k === "watch-interval-ms" && v) out.watchIntervalMs = v;
     if (k === "start-next") out.startNext = true;
     if (k === "next-name" && v) out.nextName = v;
+    if (k === "cluster-release") out.clusterRelease = true;
+    if (k === "release-from" && v) out.releaseFrom = v;
+    if (k === "release-to" && v) out.releaseTo = v;
+    if (k === "release-limit" && v) out.releaseLimit = v;
+    if (k === "release-skip-watch") out.releaseSkipWatch = true;
   }
   return out;
 }
@@ -141,6 +151,17 @@ function main() {
         `[phase:autopilot] dry-run next step: npm run phase:start -- --name=${branchName} --remote=${args.remote} --base=${args.base}\n`,
       );
     }
+    if (args.clusterRelease) {
+      const releaseArgs = [];
+      if (args.releaseFrom) releaseArgs.push(`--from=${args.releaseFrom}`);
+      if (args.releaseTo) releaseArgs.push(`--to=${args.releaseTo}`);
+      if (args.releaseLimit) releaseArgs.push(`--limit=${args.releaseLimit}`);
+      if (args.releaseSkipWatch) releaseArgs.push("--skip-watch");
+      const suffix = releaseArgs.length ? ` -- ${releaseArgs.join(" ")}` : "";
+      process.stdout.write(
+        `[phase:autopilot] dry-run next step: npm run release:finalize${suffix}\n`,
+      );
+    }
     return;
   }
 
@@ -159,6 +180,23 @@ function main() {
     printOutput(watchResult);
     if ((watchResult.status ?? 1) !== 0) {
       throw new Error("ops:watch failed after phase closeout.");
+    }
+  }
+
+  if (args.clusterRelease) {
+    const releaseArgs = ["run", "release:finalize"];
+    const releaseFlags = [];
+    if (args.releaseFrom) releaseFlags.push(`--from=${args.releaseFrom}`);
+    if (args.releaseTo) releaseFlags.push(`--to=${args.releaseTo}`);
+    if (args.releaseLimit) releaseFlags.push(`--limit=${args.releaseLimit}`);
+    if (args.releaseSkipWatch) releaseFlags.push("--skip-watch");
+    if (releaseFlags.length > 0) {
+      releaseArgs.push("--", ...releaseFlags);
+    }
+    const releaseResult = runNpm(releaseArgs);
+    printOutput(releaseResult);
+    if ((releaseResult.status ?? 1) !== 0) {
+      throw new Error("release:finalize failed during clustered phase closeout.");
     }
   }
 

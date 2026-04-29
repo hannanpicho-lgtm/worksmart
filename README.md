@@ -59,6 +59,7 @@ High-impact branch hygiene helper:
 - `npm run phase:status` — print one-line readiness + release-latest snapshot so you can decide ship/fix quickly (`--full` to include underlying command output)
 - `npm run phase:complete -- --message=\"chore: ...\"` — run tests, commit, push, then invoke `pr:sync-merge` in one closeout flow (`--dry-run`, `--skip-test`, `--no-merge`)
 - `npm run phase:autopilot -- --message=\"chore: ...\"` — gate on `phase:status`, run `phase:complete`, optionally wait post-merge green, and optionally start the next fresh branch (`--force`, `--skip-watch`, `--start-next`; auto-names next branch using next `Phase N` in `PHASE.md`)
+- `npm run phase:autopilot -- --message=\"chore: ...\" --cluster-release` — include release evidence/handoff finalization in the same closeout run (`--release-from`, `--release-to`, `--release-limit`, `--release-skip-watch`)
 - `npm run pr:sync-merge` — auto-sync current branch with latest `origin/main`, push, create/update PR, and merge in one flow (`--dry-run`, `--no-merge`)
 
 ## Deterministic local pipeline (GitHub Actions replacement)
