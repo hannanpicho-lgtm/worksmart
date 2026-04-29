@@ -133,3 +133,23 @@ Completed in this phase:
 - Added `npm run release:bundle` (backed by `scripts/release-bundle.mjs`).
 - Produces timestamped bundle artifacts under `logs/`: release notes, ops status JSON, incident template, plus a summary pointer file.
 - Supports release-note range flags (`--from`, `--to`, `--limit`) so bundle scope matches the intended release window.
+
+## Phase 14 — Release Closeout Automation (Completed)
+
+Goal: reduce operator handoff friction by combining release evidence capture and post-merge green verification.
+
+Completed in this phase:
+
+- Added `npm run release:closeout` (backed by `scripts/release-closeout.mjs`).
+- Orchestrates `release:bundle` and `ops:watch` in one command so operators can produce evidence and verify stabilization in one pass.
+- Supports release-note scope flags (`--from`, `--to`, `--limit`) plus watch timing flags (`--timeout-ms`, `--interval-ms`) and `--skip-watch` escape hatch.
+
+## Phase 15 — Release Artifact Indexing (Completed)
+
+Goal: speed up incident/release handoffs by making recent bundle artifacts discoverable from one machine-readable index.
+
+Completed in this phase:
+
+- Added `npm run release:index` (backed by `scripts/release-index.mjs`).
+- Scans `logs/` for recent `release-bundle-*.txt` summary files and writes `logs/release-index.json`.
+- Supports `--limit=<n>` so operators can cap index size during fast handoff checks.
