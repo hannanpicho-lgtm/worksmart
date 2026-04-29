@@ -29,11 +29,49 @@ function combineOut(result) {
   return [result.stdout, result.stderr].filter(Boolean).join("\n").trimEnd();
 }
 
-function trimForFile(text, maxLines = 200) {
-  const lines = text.split(/\r?\n/);
-  if (lines.length <= maxLines) return text;
-  return `${lines.slice(0, maxLines).join("\n")}\n... (${lines.length - maxLines} more line(s) truncated)`;
+function parseArgs(argv) {
+  return {
+    noTag: argv.includes("--no-tag"),
+    noSlack: argv.includes("--no-slack"),
+  };
 }
+
+function defaultTagBase() {
+  const d = new Date();
+  const yyyy = d.getUTCFullYear();
+  const mm = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const dd = String(d.getUTCDate()).padStart(2, "0");
+  const hh = String(d.getUTCHours()).padStart(2, "0");
+  const mi = String(d.getUTCMinutes()).padStart(2, "0");
+  return `v${yyyy}.${mm}.${dd}-${hh}${mi}`;
+}
+
+function gitTagExists(name) {
+  return runGit(["rev-parse", `refs/tags/${name}`]).status === 0;
+}
+
+function resolveUniqueReleaseTag() {
+  const base = defaultTagBase();
+  if (!gitTagExists(base)) return base;
+  for (let n = 2; n <= 99; n += 1) {
+    const candidate = `${base}-${n}`;
+    if (!gitTagExists(candidate)) return candidate;
+  }
+  throw new Error("Could not find unused release tag name (99 suffix attempts exhausted).");
+}
+
+async function postSlackWebhook(webhookUrl, text) {
+  const res = await fetch(webhookUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text }),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`HTTP ${res.status} ${res.statusText}: ${body.slice(0, 500)}`);
+  }
+}
+
 
 function detectPrNumber() {
   const subject = runGit(["log", "-1", "--pretty=%s"]);
@@ -75,7 +113,8 @@ function runDoctorSnippet() {
   return lines.slice(0, 25).join("\n") + (lines.length > 25 ? "\n..." : "");
 }
 
-function main() {
+async function mainAsync() {
+  const args = parseArgs(process.argv.slice(2));
   loadEnvFile(".env.pipeline");
 
   const logsDir = resolve(process.cwd(), "logs");
@@ -137,6 +176,39 @@ function main() {
   const remote = remoteUrl();
   const goLive = fetchOk && syncOk && readinessOk && watchOk;
 
+  let releaseTag = null;
+  let tagCreateDetail = "(skipped)";
+  let tagPushDetail = "(skipped)";
+  if (goLive && !args.noTag) {
+    try {
+      releaseTag = resolveUniqueReleaseTag();
+      const tagMessage = `release go-live ${releaseTag} ${sha}`;
+      const tagResult = runGit(["tag", "-a", releaseTag, "-m", tagMessage, sha]);
+      if (tagResult.status !== 0) {
+        tagCreateDetail = combineOut(tagResult) || `exit ${tagResult.status}`;
+        releaseTag = null;
+      } else {
+        tagCreateDetail = `created annotated tag ${releaseTag} at ${sha}`;
+        const pushTag = runGit(["push", "origin", releaseTag]);
+        if (pushTag.status !== 0) {
+          tagPushDetail =
+            combineOut(pushTag) ||
+            `git push origin ${releaseTag} failed (exit ${pushTag.status}); tag exists locally only`;
+        } else {
+          tagPushDetail = `pushed ${releaseTag} to origin`;
+        }
+      }
+    } catch (err) {
+      releaseTag = null;
+      tagCreateDetail = err instanceof Error ? err.message : String(err);
+    }
+  } else if (!goLive) {
+    tagCreateDetail = "(GO LIVE: NO — no tag created)";
+  } else {
+    tagCreateDetail = "(skipped: --no-tag)";
+    tagPushDetail = "(skipped: --no-tag)";
+  }
+
   let ops = null;
   try {
     ops = runOpsStatusJson();
@@ -188,6 +260,12 @@ function main() {
     `- **commit SHA:** ${sha}`,
     pr ? `- **PR:** #${pr}` : "- **PR:** not detected (no `(#nnn)` in latest commit subject / merge message)",
     `- **remote:** ${remote}`,
+    releaseTag ? `- **release tag:** ${releaseTag}` : "- **release tag:** (none — see Release versioning below)",
+    "",
+    "## Release versioning",
+    "",
+    `- **tag create:** ${tagCreateDetail}`,
+    `- **tag push:** ${tagPushDetail}`,
     "",
     "## Commands executed",
     "",
@@ -229,6 +307,7 @@ function main() {
     "",
     `Branch: ${branch}`,
     `Commit: ${sha}`,
+    releaseTag ? `Release tag: ${releaseTag}` : "Release tag: (none)",
     pr ? `PR: #${pr}` : "PR: (not detected)",
     "",
     "**Checks**",
@@ -257,9 +336,30 @@ function main() {
 
   console.log(`\nSaved go-live handoff: ${outPath}`);
 
+  const slackUrl = String(process.env.SLACK_WEBHOOK_URL || "").trim();
+  if (slackUrl && !args.noSlack) {
+    try {
+      await postSlackWebhook(slackUrl, broadcast);
+      process.stdout.write("\nSlack: broadcast posted to SLACK_WEBHOOK_URL.\n");
+    } catch (err) {
+      process.stderr.write(
+        `\nSlack: webhook post failed (${err instanceof Error ? err.message : String(err)}). Broadcast was still printed above.\n`,
+      );
+    }
+  } else if (!slackUrl) {
+    process.stdout.write(
+      "\nSlack: SLACK_WEBHOOK_URL not set — broadcast is console-only (no behavior change).\n",
+    );
+  } else {
+    process.stdout.write("\nSlack: skipped (--no-slack).\n");
+  }
+
   if (!goLive) {
     process.exit(1);
   }
 }
 
-main();
+mainAsync().catch((err) => {
+  console.error(err instanceof Error ? err.message : err);
+  process.exit(1);
+});
