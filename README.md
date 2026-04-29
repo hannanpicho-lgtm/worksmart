@@ -56,6 +56,7 @@ Useful flags:
 High-impact branch hygiene helper:
 
 - `npm run phase:start -- --name=phase/<label>` — create a clean phase branch from latest `origin/main` (fails fast on dirty trees; supports `--dry-run`)
+- `npm run phase:complete -- --message=\"chore: ...\"` — run tests, commit, push, then invoke `pr:sync-merge` in one closeout flow (`--dry-run`, `--skip-test`, `--no-merge`)
 - `npm run pr:sync-merge` — auto-sync current branch with latest `origin/main`, push, create/update PR, and merge in one flow (`--dry-run`, `--no-merge`)
 
 ## Deterministic local pipeline (GitHub Actions replacement)
