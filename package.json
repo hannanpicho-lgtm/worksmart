@@ -24,6 +24,7 @@
     "ship": "node scripts/ship.mjs",
     "ship:quick": "node scripts/ship.mjs --quick",
     "ship:open": "node scripts/ship.mjs --open",
+    "phase:start": "node scripts/phase-start.mjs",
     "release:notes": "node scripts/release-notes.mjs",
     "release:bundle": "node scripts/release-bundle.mjs",
     "release:closeout": "node scripts/release-closeout.mjs",
