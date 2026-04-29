@@ -49,7 +49,6 @@ function defaultNextBranchName() {
   const mi = String(d.getUTCMinutes()).padStart(2, "0");
   return `phase/${yyyy}${mm}${dd}-${hh}${mi}-next`;
 }
-
 function runNodeScript(scriptPath, args = []) {
   return spawnSync("node", [scriptPath, ...args], {
     encoding: "utf8",
