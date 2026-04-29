@@ -105,6 +105,7 @@ State flow (conceptual):
 - `npm run release:bundle -- --from=<ref> --to=<ref>` — generate a timestamped release bundle under `logs/` (release notes + ops snapshot + incident template)
 - `npm run release:closeout -- --from=<ref> --to=<ref>` — run release bundle capture and then `ops:watch` in one command for release handoff confirmation
 - `npm run release:index -- --limit=20` — build `logs/release-index.json` from recent release bundle summary files for quick handoff lookup
+- `npm run release:handoff` — generate a markdown handoff snapshot under `logs/` with live ops status and latest release-bundle pointers
 - `npm run verify:prod` — verify live production markers (and optional Worker `/health` if set in `pipeline.config.json`); **Deploy Cloudflare Pages** runs this after publish
 - `npm run optimize:og` — resize `public/og-image.png` to 1200×630 if needed and recompress (run after replacing OG art)
 - `npm run metrics:summary -- --days=7` — fetch Worker `/metrics-summary` using `FORM_ANALYTICS_WORKER_URL` + `ANALYTICS_INGEST_SECRET`

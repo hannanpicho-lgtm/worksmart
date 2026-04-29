@@ -153,3 +153,13 @@ Completed in this phase:
 - Added `npm run release:index` (backed by `scripts/release-index.mjs`).
 - Scans `logs/` for recent `release-bundle-*.txt` summary files and writes `logs/release-index.json`.
 - Supports `--limit=<n>` so operators can cap index size during fast handoff checks.
+
+## Phase 16 — Release Handoff Snapshot (Completed)
+
+Goal: provide a single operator-facing handoff note that combines current production health with the latest release evidence pointers.
+
+Completed in this phase:
+
+- Added `npm run release:handoff` (backed by `scripts/release-handoff.mjs`).
+- Auto-loads `.env.pipeline`, captures live `ops:status --json`, and includes latest bundle references from `release-index.json`.
+- Writes timestamped markdown handoff snapshots under `logs/` for copy/paste incident or release updates.
