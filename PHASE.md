@@ -203,3 +203,13 @@ Completed in this phase:
 - Added `npm run pr:sync-merge` (backed by `scripts/pr-sync-merge.mjs`).
 - Performs fetch + conditional branch sync against `<remote>/<base>`, then pushes and upserts the PR in one flow.
 - Supports `--dry-run` and `--no-merge` to safely preview or stop before final merge.
+
+## Phase 21 — One-Command Phase Closeout (Completed)
+
+Goal: eliminate repetitive end-of-phase manual steps by combining test, commit, push, and PR sync/merge into one command.
+
+Completed in this phase:
+
+- Added `npm run phase:complete` (backed by `scripts/phase-complete.mjs`).
+- Executes optional test run, commit (if changes exist), push, then delegates to `pr:sync-merge` for sync + PR upsert/merge.
+- Supports `--dry-run`, `--skip-test`, and `--no-merge` for safe preview and operator control.
