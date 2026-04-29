@@ -243,3 +243,13 @@ Completed in this phase:
 - Enhanced `npm run phase:autopilot` to run post-merge `ops:watch` by default after `phase:complete`.
 - Added optional next-branch bootstrap (`--start-next`, optional `--next-name`) so operators can roll into a fresh phase branch immediately.
 - Added watch controls (`--skip-watch`, `--watch-timeout-ms`, `--watch-interval-ms`) to tune or bypass stabilization wait behavior.
+
+## Phase 25 — Phase-Aware Next Branch Naming (Completed)
+
+Goal: make next-phase branch rollover clearer and more traceable by deriving branch names from the tracked phase progression.
+
+Completed in this phase:
+
+- Enhanced `phase:autopilot` default next-branch naming to parse `PHASE.md` and infer the next `Phase N` value.
+- `--start-next` now auto-generates branch names like `phase/<nextPhase>-<timestamp>` when `--next-name` is not provided.
+- Keeps timestamp-only fallback when phase parsing is unavailable, preserving robustness.

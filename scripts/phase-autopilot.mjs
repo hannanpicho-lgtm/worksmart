@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 import { spawnSync } from "node:child_process";
+import { existsSync, readFileSync } from "node:fs";
+import { resolve } from "node:path";
 
 function parseArgs(argv) {
   const out = {
@@ -40,6 +42,19 @@ function parseArgs(argv) {
   return out;
 }
 
+function inferNextPhaseNumber() {
+  const phasePath = resolve(process.cwd(), "PHASE.md");
+  if (!existsSync(phasePath)) return null;
+  const text = readFileSync(phasePath, "utf8");
+  const matches = [...text.matchAll(/##\s+Phase\s+(\d+)\s+—/g)];
+  if (matches.length === 0) return null;
+  const numbers = matches
+    .map((m) => Number.parseInt(m[1], 10))
+    .filter((n) => Number.isFinite(n) && n > 0);
+  if (numbers.length === 0) return null;
+  return Math.max(...numbers) + 1;
+}
+
 function defaultNextBranchName() {
   const d = new Date();
   const yyyy = d.getUTCFullYear();
@@ -47,8 +62,13 @@ function defaultNextBranchName() {
   const dd = String(d.getUTCDate()).padStart(2, "0");
   const hh = String(d.getUTCHours()).padStart(2, "0");
   const mi = String(d.getUTCMinutes()).padStart(2, "0");
+  const nextPhase = inferNextPhaseNumber();
+  if (nextPhase) {
+    return `phase/${nextPhase}-${yyyy}${mm}${dd}-${hh}${mi}`;
+  }
   return `phase/${yyyy}${mm}${dd}-${hh}${mi}-next`;
 }
+
 function runNodeScript(scriptPath, args = []) {
   return spawnSync("node", [scriptPath, ...args], {
     encoding: "utf8",
