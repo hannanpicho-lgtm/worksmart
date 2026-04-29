@@ -117,7 +117,7 @@ State flow (conceptual):
 - `npm run release:index -- --limit=20` — build `logs/release-index.json` from recent release bundle summary files for quick handoff lookup
 - `npm run release:handoff` — generate a markdown handoff snapshot under `logs/` with live ops status and latest release-bundle pointers
 - `npm run release:finalize -- --from=<ref> --to=<ref>` — run release closeout and handoff snapshot generation in one command (supports `--skip-watch`)
-- `npm run release:go-live` — one command: `git fetch`, `branch:check`, `readiness:report -- --release`, `ops:watch`, timestamped `logs/release-go-live-*.md`, plus a Slack/email broadcast block on stdout
+- `npm run release:go-live` — one command: `git fetch`, `branch:check`, `readiness:report -- --release`, `ops:watch`, timestamped `logs/release-go-live-*.md`, annotated release tag `vYYYY.MM.DD-HHMM` (+ push to `origin` when GO LIVE: YES), optional Slack post via `SLACK_WEBHOOK_URL`, plus a Slack/email broadcast block on stdout; use `--no-tag` / `--no-slack` to skip tagging or webhook
 - `npm run release:latest` — print a concise latest-release status line set (live checks + latest handoff/bundle artifact pointers)
 - `npm run verify:prod` — verify live production markers (and optional Worker `/health` if set in `pipeline.config.json`); **Deploy Cloudflare Pages** runs this after publish
 - `npm run optimize:og` — resize `public/og-image.png` to 1200×630 if needed and recompress (run after replacing OG art)
