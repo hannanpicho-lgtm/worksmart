@@ -233,3 +233,13 @@ Completed in this phase:
 - Added `npm run phase:autopilot` (backed by `scripts/phase-autopilot.mjs`).
 - Runs `phase:status` first and only proceeds to `phase:complete` when required readiness checks pass (unless `--force` is set).
 - Supports operator controls (`--skip-test`, `--no-merge`, `--full-status`, `--dry-run`) while keeping one-command closeout behavior.
+
+## Phase 24 — Autopilot to Next Phase (Completed)
+
+Goal: complete a phase and immediately prepare the next one with minimal manual steps and reduced branch-drift risk.
+
+Completed in this phase:
+
+- Enhanced `npm run phase:autopilot` to run post-merge `ops:watch` by default after `phase:complete`.
+- Added optional next-branch bootstrap (`--start-next`, optional `--next-name`) so operators can roll into a fresh phase branch immediately.
+- Added watch controls (`--skip-watch`, `--watch-timeout-ms`, `--watch-interval-ms`) to tune or bypass stabilization wait behavior.
