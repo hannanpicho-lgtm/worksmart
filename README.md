@@ -124,7 +124,7 @@ State flow (conceptual):
 - `npm run verify:telemetry` — smoke-test live `/ingest` using `deploy.productionUrl` origin (expects HTTP 204)
 - `npm run doctor:env` — validate required local env vars before pipeline/deploy runs
 - `npm run branch:check` — verify your branch is not behind `origin/main` before pipeline (fetches latest `main`)
-- `npm run readiness:report` — one-shot preflight report (auto-loads `.env.pipeline` if present; branch + pending changes + doctor + format + tests, plus optional ops snapshot)
+- `npm run readiness:report` — one-shot preflight report (auto-loads `.env.pipeline` if present; branch + pending changes + doctor + format + tests, plus optional ops snapshot; use `--release` for production go/no-go on `main`/`master`)
 - `npm run ops:status` — print live Pages/Worker health + latest main-branch workflow run statuses
 - `npm run ops:status -- --json` — same snapshot in machine-readable JSON
 - `npm run ops:watch` — poll post-merge status until required checks are green (pages + worker health + Quality Checks + Deploy Cloudflare Pages)
