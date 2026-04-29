@@ -193,3 +193,13 @@ Completed in this phase:
 - Added `npm run phase:start` (backed by `scripts/phase-start.mjs`).
 - Fetches latest base branch, validates clean working tree, and creates a new phase branch from `<remote>/<base>`.
 - Supports `--name`, `--remote`, `--base`, and `--dry-run` for safe preview before branch creation.
+
+## Phase 20 — Merge-Conflict Loop Breaker (Completed)
+
+Goal: reduce PR merge retries by syncing current branch with latest base before PR merge automation.
+
+Completed in this phase:
+
+- Added `npm run pr:sync-merge` (backed by `scripts/pr-sync-merge.mjs`).
+- Performs fetch + conditional branch sync against `<remote>/<base>`, then pushes and upserts the PR in one flow.
+- Supports `--dry-run` and `--no-merge` to safely preview or stop before final merge.
