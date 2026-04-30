@@ -115,15 +115,29 @@
         <div class="container hero-grid">
           <div class="hero-copy">
             <p class="eyebrow">Product delivery and operations consulting</p>
-            <h1>Ship high-impact outcomes faster, without delivery chaos.</h1>
+            <h1 id="hero-title">Ship high-impact outcomes faster, without delivery chaos.</h1>
             <p class="hero-lead">
               WorkSmart helps product and ops teams cut cycle time, reduce
               execution risk, and build reliable delivery systems from discovery
               to production.
             </p>
             <div class="hero-actions">
-              <a class="btn btn-primary" href="#contact">Book your delivery audit</a>
-              <a class="btn btn-ghost" href="#packages">See engagement options</a>
+              <a
+                class="btn btn-primary"
+                href="#contact"
+                data-track-event="hero_primary_cta_click"
+                data-track-label="book_delivery_audit"
+                data-hero-primary
+                >Book your delivery audit</a
+              >
+              <a
+                class="btn btn-ghost"
+                href="#packages"
+                data-track-event="hero_secondary_cta_click"
+                data-track-label="see_engagement_options"
+                data-hero-secondary
+                >See engagement options</a
+              >
             </div>
             <ul class="hero-metrics" aria-label="Key outcomes">
               <li>
@@ -251,7 +265,13 @@
           </div>
           <div class="inline-cta">
             <p>Need delivery confidence before your next release window?</p>
-            <a class="btn btn-primary" href="#contact">Schedule a 20-min fit call</a>
+            <a
+              class="btn btn-primary"
+              href="#contact"
+              data-track-event="solution_cta_click"
+              data-track-label="schedule_fit_call"
+              >Schedule a 20-min fit call</a
+            >
           </div>
         </div>
       </section>
@@ -322,66 +342,106 @@
           <div class="grid grid-4 proof-gallery">
             <article class="card media-card">
               <h3>Live homepage snapshot</h3>
-              <figure class="media-frame media-4-3">
-                <img
-                  src="/showcase/proof-1.png"
-                  alt="Homepage section snapshot showing hero and quick-access modules"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </figure>
+              <a
+                class="media-link"
+                href="#contact"
+                data-track-event="proof_card_click"
+                data-track-label="proof_1_homepage_snapshot"
+                data-case-study-link="homepage-ops-stack"
+              >
+                <figure class="media-frame media-4-3">
+                  <img
+                    src="/showcase/proof-1.png"
+                    alt="Homepage section snapshot showing hero and quick-access modules"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </figure>
+              </a>
             </article>
             <article class="card media-card">
               <h3>Product management console</h3>
-              <figure class="media-frame media-4-3">
-                <img
-                  src="/showcase/proof-2.png"
-                  alt="Admin product management interface with catalog and actions"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </figure>
+              <a
+                class="media-link"
+                href="#contact"
+                data-track-event="proof_card_click"
+                data-track-label="proof_2_product_management_console"
+                data-case-study-link="catalog-velocity"
+              >
+                <figure class="media-frame media-4-3">
+                  <img
+                    src="/showcase/proof-2.png"
+                    alt="Admin product management interface with catalog and actions"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </figure>
+              </a>
             </article>
             <article class="card media-card">
               <h3>Rewards system operations</h3>
-              <figure class="media-frame media-4-3">
-                <img
-                  src="/showcase/proof-3.png"
-                  alt="Rewards and salary system dashboard with audit controls"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </figure>
+              <a
+                class="media-link"
+                href="#contact"
+                data-track-event="proof_card_click"
+                data-track-label="proof_3_rewards_system_operations"
+                data-case-study-link="reward-automation"
+              >
+                <figure class="media-frame media-4-3">
+                  <img
+                    src="/showcase/proof-3.png"
+                    alt="Rewards and salary system dashboard with audit controls"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </figure>
+              </a>
             </article>
             <article class="card media-card">
               <h3>Applications showcase</h3>
-              <figure class="media-frame media-4-3">
-                <img
-                  src="/showcase/proof-4.png"
-                  alt="Applications gallery showcasing vertical use cases"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </figure>
+              <a
+                class="media-link"
+                href="#contact"
+                data-track-event="proof_card_click"
+                data-track-label="proof_4_applications_showcase"
+                data-case-study-link="application-expansion"
+              >
+                <figure class="media-frame media-4-3">
+                  <img
+                    src="/showcase/proof-4.png"
+                    alt="Applications gallery showcasing vertical use cases"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </figure>
+              </a>
             </article>
             <article class="card media-card media-card-provision">
               <h3>Provisioned proof slot (image 5)</h3>
-              <figure class="media-frame media-4-3 media-frame-rotation">
-                <img
-                  class="media-rotating media-rotating-primary"
-                  src="/showcase/proof-5-provision.png"
-                  alt="Provisioned analytics dashboard screenshot reserved as fifth proof slot"
-                  loading="lazy"
-                  decoding="async"
-                />
-                <img
-                  class="media-rotating media-rotating-secondary"
-                  src="/showcase/proof-6.png"
-                  alt="Alternate analytics report screenshot included in the fifth slot rotation"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </figure>
+              <a
+                class="media-link"
+                href="#contact"
+                data-track-event="proof_card_click"
+                data-track-label="proof_5_provision_slot_rotation"
+                data-case-study-link="analytics-provisioned-slot"
+              >
+                <figure class="media-frame media-4-3 media-frame-rotation">
+                  <img
+                    class="media-rotating media-rotating-primary"
+                    src="/showcase/proof-5-provision.png"
+                    alt="Provisioned analytics dashboard screenshot reserved as fifth proof slot"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <img
+                    class="media-rotating media-rotating-secondary"
+                    src="/showcase/proof-6.png"
+                    alt="Alternate analytics report screenshot included in the fifth slot rotation"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </figure>
+              </a>
               <p class="media-note">
                 Reserved placement with alternating view of image five and six.
               </p>
@@ -456,7 +516,39 @@
           </div>
           <div class="inline-cta proof-cta">
             <p>Want this level of delivery clarity in your next quarter?</p>
-            <a class="btn btn-primary" href="#contact">Get a custom execution plan</a>
+            <a
+              class="btn btn-primary"
+              href="#contact"
+              data-track-event="proof_cta_click"
+              data-track-label="custom_execution_plan"
+              >Get a custom execution plan</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="results" aria-labelledby="results-title">
+        <div class="container">
+          <header class="section-header">
+            <p class="eyebrow">Measured outcomes</p>
+            <h2 id="results-title">What teams unlock after system-level delivery alignment.</h2>
+          </header>
+          <div class="grid grid-3 results-grid">
+            <article class="card result-card">
+              <p class="result-value">37%</p>
+              <h3>Cycle-time reduction</h3>
+              <p>Achieved within ten weeks by standardizing ownership and release governance.</p>
+            </article>
+            <article class="card result-card">
+              <p class="result-value">2.1x</p>
+              <h3>Delivery throughput</h3>
+              <p>Increased shipped milestones per sprint without adding team headcount.</p>
+            </article>
+            <article class="card result-card">
+              <p class="result-value">90%</p>
+              <h3>Executive visibility score</h3>
+              <p>Stakeholders report clearer risk, timeline, and accountability insights weekly.</p>
+            </article>
           </div>
         </div>
       </section>
@@ -607,6 +699,14 @@
         </div>
       </section>
     </main>
+
+    <a
+      class="mobile-sticky-cta btn btn-primary"
+      href="#contact"
+      data-track-event="mobile_sticky_cta_click"
+      data-track-label="sticky_mobile_cta"
+      >Start your project</a
+    >
 
     <footer class="site-footer">
       <div class="container footer-grid">

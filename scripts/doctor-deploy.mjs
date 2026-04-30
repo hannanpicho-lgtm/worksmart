@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+import { loadEnvFile } from "./lib/env-file.mjs";
+
+loadEnvFile(".env.pipeline");
+
 const requiredVars = [
   "CLOUDFLARE_API_TOKEN",
   "CLOUDFLARE_ACCOUNT_ID",
