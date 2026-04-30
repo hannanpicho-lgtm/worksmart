@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+import { loadEnvFile } from "./lib/env-file.mjs";
+
+loadEnvFile(".env.pipeline");
+
 function read(name) {
   return String(process.env[name] || "").trim();
 }
