@@ -76,6 +76,24 @@ function trackFormEvent(eventName, metadata = {}) {
   renderDebugEvents();
 }
 
+function trackSiteEvent(eventName, metadata = {}) {
+  const payload = {
+    event: "site_interaction",
+    event_name: eventName,
+    timestamp: Date.now(),
+    ...metadata,
+  };
+
+  if (Array.isArray(window.dataLayer)) {
+    window.dataLayer.push(payload);
+  }
+
+  window.__worksmartEvents = window.__worksmartEvents || [];
+  window.__worksmartEvents.push(payload);
+  sendAnalyticsEvent(payload);
+  renderDebugEvents();
+}
+
 function setStatus(message, type = "") {
   if (!statusEl) return;
   statusEl.textContent = message;
@@ -121,10 +139,12 @@ function sendAnalyticsEvent(payload) {
   if (!ingestUrl) return;
 
   const body = JSON.stringify({
+    event_type: payload.event || "contact_form_event",
     event_name: payload.event_name,
     timestamp: payload.timestamp,
     has_company: payload.has_company,
     message_size: payload.message_size,
+    interaction_label: payload.interaction_label || "",
     page_path: window.location.pathname,
   });
 
@@ -146,6 +166,66 @@ function sendAnalyticsEvent(payload) {
   }).catch(() => {
     // Telemetry must never block or fail UX.
   });
+}
+
+function bindTrackedClicks() {
+  const trackedNodes = document.querySelectorAll("[data-track-event]");
+  for (const node of trackedNodes) {
+    node.addEventListener("click", () => {
+      const eventName = String(node.dataset.trackEvent || "").trim();
+      if (!eventName) return;
+      const interactionLabel = String(node.dataset.trackLabel || "").trim();
+      trackSiteEvent(eventName, {
+        interaction_label: interactionLabel,
+      });
+    });
+  }
+}
+
+function applyHeroVariantFromQuery() {
+  const params = new URLSearchParams(window.location.search);
+  const variant = params.get("variant");
+  if (!variant) return;
+
+  const heroTitle = document.getElementById("hero-title");
+  const heroLead = document.querySelector(".hero-lead");
+  const heroPrimaryCta = document.querySelector("[data-hero-primary]");
+  const heroSecondaryCta = document.querySelector("[data-hero-secondary]");
+
+  if (variant.toLowerCase() === "b") {
+    if (heroTitle) {
+      heroTitle.textContent = "Scale reliable delivery with less risk and faster outcomes.";
+    }
+    if (heroLead) {
+      heroLead.textContent =
+        "We help product and operations leaders install a high-trust delivery system that improves velocity, reduces execution drag, and keeps stakeholders aligned.";
+    }
+    if (heroPrimaryCta) {
+      heroPrimaryCta.textContent = "Get my delivery blueprint";
+      heroPrimaryCta.dataset.trackLabel = "get_delivery_blueprint";
+    }
+    if (heroSecondaryCta) {
+      heroSecondaryCta.textContent = "Compare service tracks";
+      heroSecondaryCta.dataset.trackLabel = "compare_service_tracks";
+    }
+    trackSiteEvent("hero_variant_applied", { interaction_label: "variant_b" });
+  } else {
+    trackSiteEvent("hero_variant_applied", {
+      interaction_label: `variant_${variant.toLowerCase()}`,
+    });
+  }
+}
+
+function bindCaseStudyLinks() {
+  const links = document.querySelectorAll("[data-case-study-link]");
+  for (const link of links) {
+    const slug = String(link.dataset.caseStudyLink || "").trim();
+    if (!slug) continue;
+    link.href = `#contact?case=${encodeURIComponent(slug)}`;
+    link.addEventListener("click", () => {
+      trackSiteEvent("case_study_open_intent", { interaction_label: slug });
+    });
+  }
 }
 
 async function submitContactForm(event) {
@@ -259,3 +339,7 @@ if (contactForm) {
   saveMetrics(loadMetrics());
   contactForm.addEventListener("submit", submitContactForm);
 }
+
+bindTrackedClicks();
+applyHeroVariantFromQuery();
+bindCaseStudyLinks();
