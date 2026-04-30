@@ -3,6 +3,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { currentBranch } from "./lib/git.mjs";
+import { loadEnvFile } from "./lib/env-file.mjs";
 import {
   triggerDeployHook,
   triggerPagesDeployment,
@@ -16,6 +17,8 @@ const envArg =
     : "production";
 const environment = envArg === "preview" ? "preview" : "production";
 const skipVerify = args.has("--skip-verify");
+
+loadEnvFile(".env.pipeline");
 
 function requireEnv(name) {
   const value = process.env[name];
