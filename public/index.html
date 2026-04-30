@@ -73,6 +73,12 @@
       async
       defer
     ></script>
+    <link
+      rel="preload"
+      href="/showcase/product_04_hero_vignette.webp"
+      as="image"
+      type="image/webp"
+    />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -116,8 +122,8 @@
               to production.
             </p>
             <div class="hero-actions">
-              <a class="btn btn-primary" href="#contact">Start a project</a>
-              <a class="btn btn-ghost" href="#packages">View packages</a>
+              <a class="btn btn-primary" href="#contact">Book your delivery audit</a>
+              <a class="btn btn-ghost" href="#packages">See engagement options</a>
             </div>
             <ul class="hero-metrics" aria-label="Key outcomes">
               <li>
@@ -137,19 +143,25 @@
             </ul>
           </div>
           <aside class="hero-panel card">
-            <h2>Live delivery preview</h2>
+            <h2>See the operating model in action</h2>
             <p>
-              Reserve this area for a short intro video, product walkthrough, or
-              delivery dashboard clip.
+              A short preview of the delivery cockpit and execution rhythm we set
+              up for every engagement.
             </p>
-            <div
-              class="media-placeholder"
-              role="img"
-              aria-label="Video preview placeholder"
-            >
-              <span>16:9 Preview Area</span>
-              <small>Drop in Loom, YouTube, or MP4 embed</small>
-            </div>
+            <figure class="media-frame media-video-frame">
+              <video
+                class="media-video"
+                src="/showcase/hailuo_clean_nowm.mp4"
+                poster="/showcase/product_04_hero_vignette.webp"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="metadata"
+                aria-label="Delivery system preview video"
+              ></video>
+              <span class="media-video-pill">58s preview</span>
+            </figure>
             <div class="hero-panel-points">
               <p>Weekly executive summaries</p>
               <p>Clear sprint-level ownership</p>
@@ -239,7 +251,7 @@
           </div>
           <div class="inline-cta">
             <p>Need delivery confidence before your next release window?</p>
-            <a class="btn btn-primary" href="#contact">Book a call</a>
+            <a class="btn btn-primary" href="#contact">Schedule a 20-min fit call</a>
           </div>
         </div>
       </section>
@@ -309,20 +321,70 @@
           </header>
           <div class="grid grid-4 proof-gallery">
             <article class="card media-card">
-              <h3>Client project photo</h3>
-              <div class="media-placeholder"><span>4:3 Photo</span></div>
+              <h3>Live homepage snapshot</h3>
+              <figure class="media-frame media-4-3">
+                <img
+                  src="/showcase/proof-1.png"
+                  alt="Homepage section snapshot showing hero and quick-access modules"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </figure>
             </article>
             <article class="card media-card">
-              <h3>Testimonial video</h3>
-              <div class="media-placeholder"><span>16:9 Video</span></div>
+              <h3>Product management console</h3>
+              <figure class="media-frame media-4-3">
+                <img
+                  src="/showcase/proof-2.png"
+                  alt="Admin product management interface with catalog and actions"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </figure>
             </article>
             <article class="card media-card">
-              <h3>Before and after</h3>
-              <div class="media-placeholder"><span>Split Visual</span></div>
+              <h3>Rewards system operations</h3>
+              <figure class="media-frame media-4-3">
+                <img
+                  src="/showcase/proof-3.png"
+                  alt="Rewards and salary system dashboard with audit controls"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </figure>
             </article>
             <article class="card media-card">
-              <h3>Dashboard screenshot</h3>
-              <div class="media-placeholder"><span>Metrics UI</span></div>
+              <h3>Applications showcase</h3>
+              <figure class="media-frame media-4-3">
+                <img
+                  src="/showcase/proof-4.png"
+                  alt="Applications gallery showcasing vertical use cases"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </figure>
+            </article>
+            <article class="card media-card media-card-provision">
+              <h3>Provisioned proof slot (image 5)</h3>
+              <figure class="media-frame media-4-3 media-frame-rotation">
+                <img
+                  class="media-rotating media-rotating-primary"
+                  src="/showcase/proof-5-provision.png"
+                  alt="Provisioned analytics dashboard screenshot reserved as fifth proof slot"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <img
+                  class="media-rotating media-rotating-secondary"
+                  src="/showcase/proof-6.png"
+                  alt="Alternate analytics report screenshot included in the fifth slot rotation"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </figure>
+              <p class="media-note">
+                Reserved placement with alternating view of image five and six.
+              </p>
             </article>
           </div>
         </div>
@@ -386,11 +448,15 @@
             </article>
             <article class="card quote-card placeholder">
               <p>
-                Client result placeholder: add quantified outcome, timeline, and
-                business impact.
+                "Cycle time dropped by 37% in 10 weeks after we standardized
+                delivery rituals, ownership, and release governance."
               </p>
-              <span>Case study slot</span>
+              <span>Director of PMO, Enterprise B2B</span>
             </article>
+          </div>
+          <div class="inline-cta proof-cta">
+            <p>Want this level of delivery clarity in your next quarter?</p>
+            <a class="btn btn-primary" href="#contact">Get a custom execution plan</a>
           </div>
         </div>
       </section>
@@ -518,6 +584,10 @@
                   data-theme="dark"
                 ></div>
               </div>
+              <p class="form-trust-note">
+                Takes less than 2 minutes. NDA-friendly conversations. No
+                spam.
+              </p>
               <div class="contact-form-actions">
                 <button class="btn btn-primary" type="submit">
                   Start my project
